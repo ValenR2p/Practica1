@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Response;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Application.Interface
 {
     public interface IInteractionTypeServices
     {
-        Task<List<InteractionType>> GetAll();
+        Task<List<GenericResponse>> GetAll();
+        Task<GenericResponse> GetById(int id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Response;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace Application.Interface
 {
-    internal interface ITaskStatusServices
+    public interface ITaskStatusServices
     {
-        Task<List<Domain.Entities.TaskStatus>> GetAll();
+        Task<List<GenericResponse>> GetAll();
+        Task<GenericResponse> GetById(int id);
     }
 }

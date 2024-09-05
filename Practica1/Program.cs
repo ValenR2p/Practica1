@@ -8,10 +8,8 @@ using Infraestructure.Query;
 //using Infraestructure.Command;
 using System;
 using Infraestructure.Command;
-
-//1° Problema: Cada vez que compilo, se añaden datos con IDs cada vez mas grandes, como si los que borre siguieran en la base de datos. 
-//No se si esta bien del todo el resultado que me da la funcion, porque cada vez que se ejecute, se añadiran los objetos creados desde  
-//el codigo nuevamente, pero con IDs mas grandes
+using Application.IMapper;
+using Application.Mappers;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,13 +38,39 @@ builder.Services.AddDbContext<ApiContext>(option => option.UseSqlServer(connecti
 builder.Services.AddScoped<ICampaignTypeServices, CampaignTypeServices>();
 builder.Services.AddScoped<ICampaignTypeQuery, CampaignTypeQuery>();
 builder.Services.AddScoped<ICampaignTypeCommand, CampaignTypeCommand>();
+builder.Services.AddScoped<IGenericMapper, GenericMapper>();
 
 builder.Services.AddScoped<IInteractionTypeServices, InteractionTypeServices>();
 builder.Services.AddScoped<IInteractionTypeQuery, InteractionTypeQuery>();
 builder.Services.AddScoped<IInteractionTypeCommand, InteractionTypeCommand>();
 //Esto es agregar dependecia. Cuando quieras injectar una instancia de UserInterface, te va a pasar una instancia de ServicesGetAll
+builder.Services.AddScoped<IClientServices, ClientServices>();
+builder.Services.AddScoped<IClientQuery, ClientQuery>();
+builder.Services.AddScoped<IClientCommand, ClientCommand>();
+builder.Services.AddScoped<IClientMapper, ClientMapper>();
 
+builder.Services.AddScoped<IProjectServices, ProjectServices>();
+builder.Services.AddScoped<IProjectQuery, ProjectQuery>();
+builder.Services.AddScoped<IProjectCommand, ProjectCommand>();
+builder.Services.AddScoped<IProjectMapper, ProjectMapper>();
+builder.Services.AddScoped<IInformationProjectMapper, InformationProjectMapper>();
 
+builder.Services.AddScoped<IInteractionServices, InteractionServices>();
+builder.Services.AddScoped<IInteractionCommand, InteractionCommand>();
+builder.Services.AddScoped<IInteractionQuery, InteractionQuery>();
+builder.Services.AddScoped<IInteractionMapper, InteractionMapper>();
+
+builder.Services.AddScoped<ITaskServices, TaskServices>();
+builder.Services.AddScoped<ITaskCommand, TaskCommand>();
+builder.Services.AddScoped<ITaskQuery, TaskQuery>();
+builder.Services.AddScoped<ITaskMapper, TaskMapper>();
+
+builder.Services.AddScoped<ITaskStatusServices, TaskStatusServices>();
+builder.Services.AddScoped<ITaskStatusQuery, TaskStatusQuery>();
+
+builder.Services.AddScoped<IUserQuery, UserQuery>();
+builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<IUserMapper, UserMapper>();
 
 
 var app = builder.Build();

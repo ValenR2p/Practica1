@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.Interface
 {
-    internal interface ITaskStatusQuery
+    public interface ITaskStatusQuery
     {
-        List<Domain.Entities.TaskStatus> ListGetAll();
+        Task<List<Domain.Entities.TaskStatus>> ListGetAll();
+        Task<Domain.Entities.TaskStatus> GetById(int id);
     }
 }

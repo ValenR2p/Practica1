@@ -1,10 +1,6 @@
-﻿using Application.Interface;
-using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.IMapper;
+using Application.Interface;
+using Application.Response;
 
 namespace Application.UseCase
 {
@@ -12,29 +8,24 @@ namespace Application.UseCase
     {
         private readonly IInteractionTypeQuery _query;
         private readonly IInteractionTypeCommand _command;
+        private readonly IGenericMapper _mapper;
 
-        public InteractionTypeServices(IInteractionTypeQuery query, IInteractionTypeCommand command)
+        public InteractionTypeServices(IInteractionTypeQuery query, IInteractionTypeCommand command,
+            IGenericMapper mapper)
         {
             _query = query;
             _command = command;
+            _mapper = mapper;
         }
-        public async Task<List<InteractionType>> GetAll()
+        public async Task<List<GenericResponse>> GetAll()
         {
-            var interactionTypes = new List<InteractionType>
-            {
-                new InteractionType { Name = "Initial Meeting" },
-                new InteractionType { Name = "Phone call" },
-                new InteractionType { Name = "Email" },
-                new InteractionType { Name = "Presentation of Results" }
-            };
-            foreach (var interactionType in interactionTypes)
-            {
-                await _command.InsertInteractionType(interactionType);
-            }
-
-            return _query.ListGetAll();
-            //return campaignTypes;
-            //throw new NotImplementedException();
+            var interactionTypes = await _query.ListGetAll();
+            return await _mapper.GetInteractionType(interactionTypes);
+        }
+        public async Task<GenericResponse> GetById(int id)
+        {
+            var interactionType = await _query.GetById(id);
+            return await _mapper.GetOneInteractionType(interactionType);
         }
     }
 }

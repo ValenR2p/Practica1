@@ -9,6 +9,7 @@ namespace Application.Interface
 {
     public interface ICampaignTypeQuery
     {
-        List<CampaignType> ListGetAll();
+        Task<List<CampaignType>> ListGetAll();
+        Task<CampaignType> GetCampaignTypes(int id);
     }
 }

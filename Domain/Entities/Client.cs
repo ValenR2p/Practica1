@@ -13,9 +13,6 @@ namespace Domain.Entities
         public string Phone { get; set; }
         public string Company { get; set; }
         public string Address { get; set; }
-
-        //Un cliente puede tener muchos projectos 
+        public DateTime CreateDate { get; set; }
     }
-
-
 }

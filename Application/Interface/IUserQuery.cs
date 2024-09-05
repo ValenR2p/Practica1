@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.Interface
 {
-    internal interface ITaskStatusCommand
+    public interface IUserQuery
     {
-        public System.Threading.Tasks.Task TaskStatusType(Domain.Entities.TaskStatus taskStatus);
+        Task<User> GetById(int id);
+        Task<List<User>> ListGetAll();
     }
 }

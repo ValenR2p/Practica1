@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
@@ -8,19 +7,15 @@ namespace Domain.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ProjectID_uuid { get; set; }
+        public Guid ProjectID { get; set; }
         public string ProjectName { get; set; }
         public int CampaignType { get; set; }
-
-        //[ForeignKey(nameof(CampaignType))]
-        public CampaignType Campaign { get; set; }
+        [ForeignKey(nameof(CampaignType))] public CampaignType Campaign { get; set; }
         public int ClientID { get; set; }
-
-        //Al asignar Client como Clave Foranea, se le atribuye a ClientID como valor que conecta el projecto 
-        //Con un objeto de tipo Client, haciendo esto mediante el nameof
-        //[ForeignKey(nameof(ClientID))]//tambien se puede escribir como FoerignKey("ClientID"), creo
-        public Client Client { get; set; }
+        [ForeignKey(nameof(ClientID))] public Client Client { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
     }
 }

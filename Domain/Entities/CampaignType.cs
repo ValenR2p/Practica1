@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
     public class CampaignType
     {
-        [Key] public int Id { get; set; }
+        [Key][DatabaseGenerated(DatabaseGeneratedOption.Identity)] public int Id { get; set; }
         public string Name { get; set; }
     }
 }

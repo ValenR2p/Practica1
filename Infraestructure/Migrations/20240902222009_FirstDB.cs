@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDB : Migration
+    public partial class FirstDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +36,8 @@ namespace Infraestructure.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Company = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,7 +63,7 @@ namespace Infraestructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,21 +88,21 @@ namespace Infraestructure.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    ProjectID_uuid = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CampaignType = table.Column<int>(type: "int", nullable: false),
-                    CampaignId = table.Column<int>(type: "int", nullable: false),
                     ClientID = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Projects", x => x.ProjectID_uuid);
+                    table.PrimaryKey("PK_Projects", x => x.ProjectID);
                     table.ForeignKey(
-                        name: "FK_Projects_CampaignTypes_CampaignId",
-                        column: x => x.CampaignId,
+                        name: "FK_Projects_CampaignTypes_CampaignType",
+                        column: x => x.CampaignType,
                         principalTable: "CampaignTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -115,20 +118,18 @@ namespace Infraestructure.Migrations
                 name: "Interactions",
                 columns: table => new
                 {
-                    InteractionID_uuid = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
+                    InteractionID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     interactionType = table.Column<int>(type: "int", nullable: false),
-                    interactionId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Interactions", x => x.InteractionID_uuid);
+                    table.PrimaryKey("PK_Interactions", x => x.InteractionID);
                     table.ForeignKey(
-                        name: "FK_Interactions_InteractionTypes_interactionId",
-                        column: x => x.interactionId,
+                        name: "FK_Interactions_InteractionTypes_interactionType",
+                        column: x => x.interactionType,
                         principalTable: "InteractionTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -136,7 +137,7 @@ namespace Infraestructure.Migrations
                         name: "FK_Interactions_Projects_ProjectID",
                         column: x => x.ProjectID,
                         principalTable: "Projects",
-                        principalColumn: "ProjectID_uuid",
+                        principalColumn: "ProjectID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -144,40 +145,89 @@ namespace Infraestructure.Migrations
                 name: "Tasks",
                 columns: table => new
                 {
-                    TaskID_uuid = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TaskID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProjectID = table.Column<int>(type: "int", nullable: false),
-                    AssignedToUserID = table.Column<int>(type: "int", nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: false)
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AssignedTo = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Task = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tasks", x => x.TaskID_uuid);
+                    table.PrimaryKey("PK_Tasks", x => x.TaskID);
                     table.ForeignKey(
                         name: "FK_Tasks_Projects_ProjectID",
                         column: x => x.ProjectID,
                         principalTable: "Projects",
-                        principalColumn: "ProjectID_uuid",
+                        principalColumn: "ProjectID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tasks_TaskStatus_StatusId",
-                        column: x => x.StatusId,
+                        name: "FK_Tasks_TaskStatus_Task",
+                        column: x => x.Task,
                         principalTable: "TaskStatus",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tasks_Users_AssignedToUserID",
-                        column: x => x.AssignedToUserID,
+                        name: "FK_Tasks_Users_AssignedTo",
+                        column: x => x.AssignedTo,
                         principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "CampaignTypes",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "SEO" },
+                    { 2, "PPC" },
+                    { 3, "Social Media" },
+                    { 4, "Email Marketin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "InteractionTypes",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Initial Meeting" },
+                    { 2, "Phone call" },
+                    { 3, "Email" },
+                    { 4, "Presentation of Results" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TaskStatus",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Pending" },
+                    { 2, "In Progress" },
+                    { 3, "Blocked" },
+                    { 4, "Done" },
+                    { 5, "Cancel" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserID", "Email", "Name" },
+                values: new object[,]
+                {
+                    { 1, "jdone@marketing.com", "Joe Done" },
+                    { 2, "namstrong@marketing.com", "Nill Amstrong" },
+                    { 3, "mmoralez@marketing.com", "Marlyn Morales" },
+                    { 4, "aorue@marketing.com", "Antony Orue" },
+                    { 5, "jfernandez@marketing.com", "Jazmin Fernandez" }
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Interactions_interactionId",
+                name: "IX_Interactions_interactionType",
                 table: "Interactions",
-                column: "interactionId");
+                column: "interactionType");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Interactions_ProjectID",
@@ -185,9 +235,9 @@ namespace Infraestructure.Migrations
                 column: "ProjectID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_CampaignId",
+                name: "IX_Projects_CampaignType",
                 table: "Projects",
-                column: "CampaignId");
+                column: "CampaignType");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_ClientID",
@@ -195,9 +245,9 @@ namespace Infraestructure.Migrations
                 column: "ClientID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_AssignedToUserID",
+                name: "IX_Tasks_AssignedTo",
                 table: "Tasks",
-                column: "AssignedToUserID");
+                column: "AssignedTo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_ProjectID",
@@ -205,9 +255,9 @@ namespace Infraestructure.Migrations
                 column: "ProjectID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_StatusId",
+                name: "IX_Tasks_Task",
                 table: "Tasks",
-                column: "StatusId");
+                column: "Task");
         }
 
         /// <inheritdoc />

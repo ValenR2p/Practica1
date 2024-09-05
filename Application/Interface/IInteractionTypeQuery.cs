@@ -9,6 +9,7 @@ namespace Application.Interface
 {
     public interface IInteractionTypeQuery
     {
-        List<InteractionType> ListGetAll();
+        Task<List<InteractionType>> ListGetAll();
+        Task<InteractionType> GetById(int id);
     }
 }

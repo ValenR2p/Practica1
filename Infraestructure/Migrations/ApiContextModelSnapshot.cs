@@ -37,6 +37,28 @@ namespace Infraestructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CampaignTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "SEO"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "PPC"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Social Media"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Email Marketin"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Client", b =>
@@ -54,6 +76,9 @@ namespace Infraestructure.Migrations
                     b.Property<string>("Company")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -74,11 +99,9 @@ namespace Infraestructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Interaction", b =>
                 {
-                    b.Property<int>("InteractionID_uuid")
+                    b.Property<Guid>("InteractionID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InteractionID_uuid"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -87,20 +110,17 @@ namespace Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("interactionId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ProjectID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("interactionType")
                         .HasColumnType("int");
 
-                    b.HasKey("InteractionID_uuid");
+                    b.HasKey("InteractionID");
 
                     b.HasIndex("ProjectID");
 
-                    b.HasIndex("interactionId");
+                    b.HasIndex("interactionType");
 
                     b.ToTable("Interactions");
                 });
@@ -120,24 +140,44 @@ namespace Infraestructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InteractionTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Initial Meeting"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Phone call"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Email"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Presentation of Results"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Project", b =>
                 {
-                    b.Property<int>("ProjectID_uuid")
+                    b.Property<Guid>("ProjectID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectID_uuid"));
-
-                    b.Property<int>("CampaignId")
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("CampaignType")
                         .HasColumnType("int");
 
                     b.Property<int>("ClientID")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -149,9 +189,12 @@ namespace Infraestructure.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ProjectID_uuid");
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("CampaignId");
+                    b.HasKey("ProjectID");
+
+                    b.HasIndex("CampaignType");
 
                     b.HasIndex("ClientID");
 
@@ -160,32 +203,42 @@ namespace Infraestructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Task", b =>
                 {
-                    b.Property<int>("TaskID_uuid")
+                    b.Property<Guid>("TaskID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AssignedTo")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskID_uuid"));
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("AssignedToUserID")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectID")
+                    b.Property<Guid>("ProjectID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusId")
+                    b.Property<int>("Task")
                         .HasColumnType("int");
 
-                    b.HasKey("TaskID_uuid");
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("AssignedToUserID");
+                    b.HasKey("TaskID");
+
+                    b.HasIndex("AssignedTo");
 
                     b.HasIndex("ProjectID");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("Task");
 
                     b.ToTable("Tasks");
                 });
@@ -198,13 +251,40 @@ namespace Infraestructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("TaskStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "In Progress"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Blocked"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Done"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Cancel"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -226,6 +306,38 @@ namespace Infraestructure.Migrations
                     b.HasKey("UserID");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserID = 1,
+                            Email = "jdone@marketing.com",
+                            Name = "Joe Done"
+                        },
+                        new
+                        {
+                            UserID = 2,
+                            Email = "namstrong@marketing.com",
+                            Name = "Nill Amstrong"
+                        },
+                        new
+                        {
+                            UserID = 3,
+                            Email = "mmoralez@marketing.com",
+                            Name = "Marlyn Morales"
+                        },
+                        new
+                        {
+                            UserID = 4,
+                            Email = "aorue@marketing.com",
+                            Name = "Antony Orue"
+                        },
+                        new
+                        {
+                            UserID = 5,
+                            Email = "jfernandez@marketing.com",
+                            Name = "Jazmin Fernandez"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Interaction", b =>
@@ -238,7 +350,7 @@ namespace Infraestructure.Migrations
 
                     b.HasOne("Domain.Entities.InteractionType", "interaction")
                         .WithMany()
-                        .HasForeignKey("interactionId")
+                        .HasForeignKey("interactionType")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -251,7 +363,7 @@ namespace Infraestructure.Migrations
                 {
                     b.HasOne("Domain.Entities.CampaignType", "Campaign")
                         .WithMany()
-                        .HasForeignKey("CampaignId")
+                        .HasForeignKey("CampaignType")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -268,9 +380,9 @@ namespace Infraestructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Task", b =>
                 {
-                    b.HasOne("Domain.Entities.User", "AssignedTo")
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("AssignedToUserID")
+                        .HasForeignKey("AssignedTo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -280,17 +392,17 @@ namespace Infraestructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.TaskStatus", "Status")
+                    b.HasOne("Domain.Entities.TaskStatus", "TaskStatus")
                         .WithMany()
-                        .HasForeignKey("StatusId")
+                        .HasForeignKey("Task")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AssignedTo");
-
                     b.Navigation("Project");
 
-                    b.Navigation("Status");
+                    b.Navigation("TaskStatus");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,40 +1,27 @@
-﻿using Application.Interface;
-using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.IMapper;
+using Application.Interface;
+using Application.Response;
 
 namespace Application.UseCase
 {
-    internal class TaskStatusServices
+    public class TaskStatusServices : ITaskStatusServices
     {
         private readonly ITaskStatusQuery _query;
-        private readonly ITaskStatusCommand _command;
-
-        public TaskStatusServices(ITaskStatusQuery query, ITaskStatusCommand command)
+        private readonly IGenericMapper _mapper;
+        public TaskStatusServices(ITaskStatusQuery query, IGenericMapper mapper)
         {
             _query = query;
-            _command = command;
+            _mapper = mapper;
         }
-        public async Task<List<Domain.Entities.TaskStatus>> GetAll()
+        public async Task<List<GenericResponse>> GetAll()
         {
-            var campaignTypes = new List<Domain.Entities.TaskStatus>
-            {
-                new Domain.Entities.TaskStatus { Name = "SEO" },
-                new Domain.Entities.TaskStatus { Name = "PPC" },
-                new Domain.Entities.TaskStatus { Name = "Social Media" },
-                new Domain.Entities.TaskStatus { Name = "Email Marketin" }
-            };
-            foreach (var campaignType in campaignTypes)
-            {
-                await _command.InsertCampaignType(campaignType);
-            }
-
-            return _query.ListGetAll();
-            //return campaignTypes;
-            //throw new NotImplementedException();
+            var tasksStatus = await _query.ListGetAll();
+            return await _mapper.GetTaskStatus(tasksStatus);
+        }
+        public async Task<GenericResponse> GetById(int id)
+        {
+            var taskStatus = await _query.GetById(id);
+            return await _mapper.GetOneTaskStatus(taskStatus);
         }
     }
 }

@@ -1,27 +1,25 @@
 ﻿using Application.Interface;
 using Domain.Entities;
 using Infraestructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructure.Query
 {
     public class InteractionTypeQuery : IInteractionTypeQuery
     {
         private readonly ApiContext _apiContext;
-
         public InteractionTypeQuery(ApiContext context)
         {
             _apiContext = context;
         }
-        public List<InteractionType> ListGetAll()
+        public async Task<List<InteractionType>> ListGetAll()
         {
-            return _apiContext.InteractionTypes.ToList();
-
-            //throw new NotImplementedException();
+            return await _apiContext.InteractionTypes.ToListAsync();
+        }
+        public async Task<InteractionType> GetById(int id)
+        {
+            var interactionType = await _apiContext.InteractionTypes.FindAsync(id);
+            return interactionType;
         }
     }
 }
