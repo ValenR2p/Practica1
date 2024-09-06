@@ -24,7 +24,7 @@ namespace Infraestructure.Query
                 FirstOrDefault(s => s.ProjectID == id);
             return project;
         }
-        public async Task<List<Project>> ListGetByFilter(string? name, int CampaignTypeId, int ClientId)
+        public async Task<List<Project>> ListGetByFilter(string? name, int? CampaignTypeId, int? ClientId)
         {
             if (name != null || CampaignTypeId != 0 || ClientId != 0) {
                 var projects = _apiContext.Projects.

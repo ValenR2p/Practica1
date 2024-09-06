@@ -30,47 +30,78 @@ namespace Practica1.Controllers.v1
         }
         [HttpPost]
         [ProducesResponseType(typeof(List<InformationProjectResponse>), 200)]
-        //Añadir lo de que salte un error si se crea un Project cuyo nombre ya esta usado
+        [ProducesResponseType(typeof(ExceptionResponse), 400)]
         public async Task<IActionResult> CreateProject(CreateProjectRequest request)
         {
-            var result = await _services.CreateProject(request);
-            return new JsonResult(result)
+            try
             {
-                StatusCode = 200
-            };
+                var result = await _services.CreateProject(request);
+                return new JsonResult(result)
+                {
+                    StatusCode = 200
+                };
+            }
+            catch (ObjectAlreadyExistsException ex)
+            {
+                return BadRequest(new ExceptionResponse { message = ex.message });
+            }
         }
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(List<InformationProjectResponse>), 200)]
+        [ProducesResponseType(typeof(ExceptionResponse), 400)]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _services.GetById(id);
-            //Cambiar, por un "return ok;"
-            return new JsonResult(result)
+            try
             {
-                StatusCode = 200
-            };
+                var result = await _services.GetById(id);
+                //Cambiar, por un "return ok;"
+                return new JsonResult(result)
+                {
+                    StatusCode = 200
+                };
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                return BadRequest(new ExceptionResponse { message = ex.message });
+            }
         }
         [HttpPost("{id}/interactions")]
         [ProducesResponseType(typeof(List<InteractionsResponse>), 200)]
+        [ProducesResponseType(typeof(ExceptionResponse), 400)]
         public async Task<IActionResult> AddInteraction(CreateInteractionRequest createInteractionRequest, Guid id)
         {
-            var newInteraction = await _services.AddInteraction(createInteractionRequest, id);
-            return new JsonResult(newInteraction)
+            try
             {
-                StatusCode = 200
-            };
+                var newInteraction = await _services.AddInteraction(createInteractionRequest, id);
+                return new JsonResult(newInteraction)
+                {
+                    StatusCode = 200
+                };
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                return BadRequest(new ExceptionResponse { message = ex.message });
+            }
         }
         [HttpPost("{id}/tasks")]
         [ProducesResponseType(typeof(List<TaskResponse>), 200)]
+        [ProducesResponseType(typeof(ExceptionResponse), 400)]
         public async Task<IActionResult> AddTask(CreateTaskRequest createTaskRequest, Guid id)
         {
-            var newTask = await _services.AddTask(createTaskRequest, id);
-            return new JsonResult(newTask)
+            try
             {
-                StatusCode = 200
-            };
+                var newTask = await _services.AddTask(createTaskRequest, id);
+                return new JsonResult(newTask)
+                {
+                    StatusCode = 200
+                };
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                return BadRequest(new ExceptionResponse { message = ex.message });
+            }
         }
-        [HttpPut("/api/Tasks/{id}")]
+        [HttpPut("/api/v1/Tasks/{id}")]
         [ProducesResponseType(typeof(List<TaskResponse>), 200)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]
         public async Task<IActionResult> UpdateTask(CreateTaskRequest createTaskRequest, Guid id)

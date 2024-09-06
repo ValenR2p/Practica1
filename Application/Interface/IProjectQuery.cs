@@ -11,6 +11,6 @@ namespace Application.Interface
     {
         Task<List<Project>> ListGetAll();
         Task<Project> ListGetById(Guid id);
-        Task<List<Project>> ListGetByFilter(string? name, int CampaignTypeId, int ClientId);
+        Task<List<Project>> ListGetByFilter(string? name, int? CampaignTypeId, int? ClientId);
     }
 }
