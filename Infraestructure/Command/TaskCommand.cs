@@ -15,5 +15,10 @@ namespace Infraestructure.Command
             _apiContext.Add(task);
             await _apiContext.SaveChangesAsync();
         }
+        public async System.Threading.Tasks.Task UpdateTask(Domain.Entities.Task task)
+        {
+            _apiContext.Tasks.Update(task);
+            _apiContext.SaveChanges();
+        }
     }
 }

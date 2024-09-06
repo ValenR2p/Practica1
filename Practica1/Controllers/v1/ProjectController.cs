@@ -1,4 +1,5 @@
-﻿using Application.Interface;
+﻿using Application.Exceptions;
+using Application.Interface;
 using Application.Models;
 using Application.Response;
 using Microsoft.AspNetCore.Http;
@@ -70,10 +71,22 @@ namespace Practica1.Controllers.v1
             };
         }
         [HttpPut("/api/Tasks/{id}")]
-        public async Task<IActionResult> UpdateTask(Guid id)
+        [ProducesResponseType(typeof(List<TaskResponse>), 200)]
+        [ProducesResponseType(typeof(ExceptionResponse), 400)]
+        public async Task<IActionResult> UpdateTask(CreateTaskRequest createTaskRequest, Guid id)
         {
-            var project = await _services.GetById(id);
-            return new JsonResult(project);
+            try
+            {
+                var updatedTask = await _services.UpdateTask(createTaskRequest, id);
+                return new JsonResult(updatedTask)
+                {
+                    StatusCode = 200
+                };
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                return BadRequest(new ExceptionResponse { message = ex.message });
+            }
         }
     }
 }

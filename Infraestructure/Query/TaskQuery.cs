@@ -19,5 +19,13 @@ namespace Infraestructure.Query
                 Where(s => s.ProjectID == id).ToListAsync();
             return tasks;   
         }
+        public async Task<Domain.Entities.Task> ListGetById(Guid id)
+        {
+            var tasks = await _apiContext.Tasks.
+                Include(s => s.User).
+                Include(s => s.TaskStatus).
+                FirstOrDefaultAsync(s => s.TaskID == id);
+            return tasks;
+        }
     }
 }

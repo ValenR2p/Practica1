@@ -74,10 +74,10 @@ namespace Application.UseCase
             var NewInteraction = await _interactionServices.CreateInteraction(request, id);
             return NewInteraction;
         }
-        public async Task<Project> UpdateTask(Domain.Entities.Task task, Guid id)
+        public async Task<TaskResponse> UpdateTask(CreateTaskRequest createTaskRequest, Guid id)
         {
-            var project = await _query.ListGetById(id);
-            throw new NotImplementedException();
+            var updatedTask = await _taskServices.UpdateTask(createTaskRequest, id);
+            return updatedTask;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.IMapper;
+﻿using Application.Exceptions;
+using Application.IMapper;
 using Application.Interface;
 using Application.Models;
 using Application.Response;
@@ -52,6 +53,23 @@ namespace Application.UseCase
         {
             await _command.InsertTask(task);
             throw new NotImplementedException();
+        }
+        public async Task<TaskResponse> UpdateTask(CreateTaskRequest request, Guid id)
+        {
+            var task = await _query.ListGetById(id);
+            if (task != null)
+            {
+                task.Name = request.Name;
+                task.DueDate = request.DueDate;
+                task.AssignedTo = request.AssignedTo;
+                task.Status = request.Status;
+            }
+            else {
+                throw new ObjectNotFoundException("Task with the ID " + id + " not Found");
+            }
+            await _command.UpdateTask(task);
+            var updatedTask = await _query.ListGetById(task.TaskID);
+            return await _mapper.GetOneTask(updatedTask);
         }
     }
 }

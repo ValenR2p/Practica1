@@ -18,6 +18,6 @@ namespace Application.Interface
         Task<List<ProjectResponse>> GetAllFiltered(string? name, int CampaignTypeId, int ClientId);
         Task<TaskResponse> AddTask(CreateTaskRequest task, Guid id);
         Task<InteractionsResponse> AddInteraction(CreateInteractionRequest interaction, Guid id);
-        Task<Project> UpdateTask(Domain.Entities.Task task, Guid id);
+        Task<TaskResponse> UpdateTask(CreateTaskRequest createTaskRequest, Guid id);
     }
 }
