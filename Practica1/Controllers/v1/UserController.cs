@@ -1,6 +1,5 @@
 ﻿using Application.Interface;
 using Application.Response;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Practica1.Controllers.v1
@@ -16,7 +15,7 @@ namespace Practica1.Controllers.v1
         }
         [HttpGet]
         [ProducesResponseType(typeof(List<UserResponse>), 200)]
-        public async Task<IActionResult> GetAllUsers() 
+        public async Task<IActionResult> GetAllUsers()
         {
             var result = await _services.GetAll();
             return new JsonResult(result)

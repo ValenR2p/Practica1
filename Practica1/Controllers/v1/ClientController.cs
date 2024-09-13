@@ -1,7 +1,7 @@
-﻿using Application.Interface;
+﻿using Application.Exceptions;
+using Application.Interface;
 using Application.Models;
 using Application.Response;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Practica1.Controllers.v1
@@ -15,7 +15,7 @@ namespace Practica1.Controllers.v1
         {
             _services = services;
         }
-        
+
         [HttpGet]
         [ProducesResponseType(typeof(List<ClientResponse>), 200)]
         public async Task<IActionResult> GetAll()
@@ -27,14 +27,22 @@ namespace Practica1.Controllers.v1
             };
         }
         [HttpPost]
-        [ProducesResponseType(typeof(List<ClientResponse>), 200)]
+        [ProducesResponseType(typeof(List<ClientResponse>), 201)]
+        [ProducesResponseType(typeof(ExceptionResponse), 400)]
         public async Task<IActionResult> CreateClient(CreateClientRequest request)
         {
-            var result = await _services.CreateClient(request);
-            return new JsonResult(result)
+            try
             {
-                StatusCode = 200
-            };
+                var result = await _services.CreateClient(request);
+                return new JsonResult(result)
+                {
+                    StatusCode = 200
+                };
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new ExceptionResponse { message = ex.message });
+            }
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using Application.IMapper;
+﻿using Application.Exceptions;
+using Application.IMapper;
 using Application.Interface;
 using Application.Models;
 using Application.Response;
@@ -12,14 +13,15 @@ namespace Application.UseCase
         private readonly IInteractionQuery _query;
         private readonly IInteractionMapper _mapper;
         private readonly IInteractionTypeServices _interactionTypeServices;
-
-        public InteractionServices(IInteractionCommand command, IInteractionTypeServices interactionTypeServices, 
-            IInteractionQuery query, IInteractionMapper mapper)
+        private readonly IInteractionTypeQuery _interactionTypeQuery;
+        public InteractionServices(IInteractionCommand command, IInteractionTypeServices interactionTypeServices,
+            IInteractionQuery query, IInteractionMapper mapper, IInteractionTypeQuery interactionTypeQuery)
         {
             _command = command;
             _interactionTypeServices = interactionTypeServices;
             _query = query;
             _mapper = mapper;
+            _interactionTypeQuery = interactionTypeQuery;
         }
         public async Task<InteractionsResponse> CreateInteraction(CreateInteractionRequest request, Guid id)
         {
@@ -30,6 +32,15 @@ namespace Application.UseCase
                 ProjectID = id,
                 interactionType = request.interactionType,
             };
+            var interactionTypeSearch = await _interactionTypeQuery.GetById(interaction.interactionType);
+            if (interaction.Notes == "string" || interaction.Notes == "" || interaction.interactionType == 0)
+            {
+                throw new BadRequestException("The Request contains a non acceptable value");
+            }
+            else if (interactionTypeSearch == null)
+            {
+                throw new BadRequestException("There is no Interaction Type with the chosen ID");
+            }
             await _command.InsertInteraction(interaction);
             return new InteractionsResponse
             {

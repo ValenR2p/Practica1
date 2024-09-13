@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.Interface;
+using Domain.Entities;
 using Infraestructure.Persistence;
-using Application.Interface;
 
 namespace Infraestructure.Command
 {

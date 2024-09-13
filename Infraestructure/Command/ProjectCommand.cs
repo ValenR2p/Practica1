@@ -1,5 +1,5 @@
-﻿using Domain.Entities;
-using Application.Interface;
+﻿using Application.Interface;
+using Domain.Entities;
 using Infraestructure.Persistence;
 
 namespace Infraestructure.Command
@@ -14,6 +14,12 @@ namespace Infraestructure.Command
         public async System.Threading.Tasks.Task InsertProject(Project project)
         {
             _apiContext.Add(project);
+            await _apiContext.SaveChangesAsync();
+        }
+
+        public async System.Threading.Tasks.Task UpdateProject(Project project)
+        {
+            _apiContext.Projects.Update(project);
             await _apiContext.SaveChangesAsync();
         }
     }

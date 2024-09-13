@@ -14,7 +14,7 @@ namespace Infraestructure.Query
         }
         public async Task<Client> ListGetById(int id)
         {
-            return _apiContext.Clients.FirstOrDefault(s => s.ClientID == id);
+            return await _apiContext.Clients.FirstOrDefaultAsync(s => s.ClientID == id);
         }
         public async Task<List<Client>> ListGetAll()
         {

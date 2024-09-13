@@ -17,14 +17,14 @@ namespace Application.UseCase
             _mapper = mapper;
         }
         public async Task<List<GenericResponse>> GetAll()
-        { 
+        {
             var campaingsTypes = await _query.ListGetAll();
             return await _mapper.GetCampaignType(campaingsTypes);
             //return _query.ListGetAll();
         }
         public async Task<GenericResponse> GetById(int id)
         {
-            var campaignType= await _query.GetCampaignTypes(id);
+            var campaignType = await _query.GetCampaignTypes(id);
             return await _mapper.GetOneCampaignType(campaignType);
         }
     }

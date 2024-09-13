@@ -1,6 +1,5 @@
 ﻿using Application.Interface;
 using Application.Response;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Practica1.Controllers.v1

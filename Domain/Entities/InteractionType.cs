@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
     public class InteractionType
     {
-        [Key] public int Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

@@ -2,11 +2,6 @@
 using Application.Interface;
 using Application.Response;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Mappers
 {
@@ -28,14 +23,11 @@ namespace Application.Mappers
         {
             var response = new ProjectResponse
             {
-                //Puede ser que el Client y el Campaign traidos del objeto de nombre project sean null, a pesar del include
                 ProjectID = project.ProjectID,
                 ProjectName = project.ProjectName,
                 StartDate = project.StartDate,
                 EndDate = project.EndDate,
-                //Client = await _clientMapper.GetOneClient(project.Client),
                 Client = await _clientServices.GetById(project.ClientID),
-                //Campaign = await _campaignMapper.GetOneCampaignType(project.Campaign),
                 Campaign = await _campaignTypeServices.GetById(project.CampaignType),
             };
             return await System.Threading.Tasks.Task.FromResult(response);

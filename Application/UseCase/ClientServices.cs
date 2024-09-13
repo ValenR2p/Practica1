@@ -1,4 +1,5 @@
-﻿using Application.IMapper;
+﻿using Application.Exceptions;
+using Application.IMapper;
 using Application.Interface;
 using Application.Models;
 using Application.Response;
@@ -38,7 +39,12 @@ namespace Application.UseCase
                 Phone = request.Phone,
                 Company = request.Company,
                 Address = request.Address,
+                CreateDate = DateTime.Now
             };
+            if (client.Name == "string" || client.Email == "string" || client.Phone == "string" || client.Company == "string" || client.Address == "string")
+            {
+                throw new BadRequestException("The Request contains a non acceptable value");
+            }
             await _command.InsertClient(client);
             return await this.GetById(client.ClientID);
         }

@@ -1,15 +1,13 @@
-using Application.Interface;
-using Application.UseCase;
-//using Infraestructure.Query;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
-using Infraestructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Infraestructure.Query;
-//using Infraestructure.Command;
-using System;
-using Infraestructure.Command;
 using Application.IMapper;
+using Application.Interface;
 using Application.Mappers;
+using Application.UseCase;
+//using Infraestructure.Command;
+using Infraestructure.Command;
+//using Infraestructure.Query;
+using Infraestructure.Persistence;
+using Infraestructure.Query;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);

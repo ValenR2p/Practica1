@@ -12,16 +12,20 @@ namespace Application.UseCase
         private readonly ITaskQuery _query;
         private readonly ITaskMapper _mapper;
         private readonly ITaskStatusServices _taskStatusServices;
+        private readonly ITaskStatusQuery _taskStatusQuery;
         private readonly IUserServices _userServices;
+        private readonly IUserQuery _userQuery;
 
-        public TaskServices(ITaskCommand command, ITaskQuery query, ITaskMapper mapper,
-            IUserServices userServices, ITaskStatusServices taskStatusServices)
+        public TaskServices(ITaskCommand command, ITaskQuery query, ITaskMapper mapper, IUserServices userServices,
+            ITaskStatusServices taskStatusServices, ITaskStatusQuery taskStatusQuery, IUserQuery userQuery)
         {
             _command = command;
             _query = query;
             _mapper = mapper;
             _taskStatusServices = taskStatusServices;
             _userServices = userServices;
+            _taskStatusQuery = taskStatusQuery;
+            _userQuery = userQuery;
         }
         public async Task<TaskResponse> CreateTask(CreateTaskRequest request, Guid id)
         {
@@ -29,10 +33,20 @@ namespace Application.UseCase
             {
                 Name = request.Name,
                 DueDate = request.DueDate,
-                AssignedTo = request.AssignedTo,        
+                AssignedTo = request.AssignedTo,
                 Status = request.Status,
                 ProjectID = id,
             };
+            var taskStatusSearch = await _taskStatusQuery.GetById(task.Status);
+            var userSearch = await _userQuery.GetById(task.AssignedTo);
+            if (task.Name == "string" || task.Name == "" || task.Status == 0 || task.AssignedTo == 0)
+            {
+                throw new BadRequestException("The Request contains a non acceptable value");
+            }
+            else if (taskStatusSearch == null || userSearch == null)
+            {
+                throw new BadRequestException("There is no Task or User with the chosen ID´s");
+            }
             await _command.InsertTask(task);
             return new TaskResponse
             {
@@ -41,7 +55,7 @@ namespace Application.UseCase
                 DueDate = task.DueDate,
                 ProjectID = task.ProjectID,
                 TaskStatus = await _taskStatusServices.GetById(request.Status),
-                User = await _userServices.GetById(request.AssignedTo), 
+                User = await _userServices.GetById(request.AssignedTo),
             };
         }
         public async Task<List<TaskResponse>> GetAllTasksById(Guid id)
@@ -63,9 +77,21 @@ namespace Application.UseCase
                 task.DueDate = request.DueDate;
                 task.AssignedTo = request.AssignedTo;
                 task.Status = request.Status;
+                task.UpdateDate = DateTime.Now;
             }
-            else {
-                throw new ObjectNotFoundException("Task with the ID " + id + " not Found");
+            else
+            {
+                throw new BadRequestException("Task with the ID " + id + " not Found");
+            }
+            var taskStatusSearch = await _taskStatusQuery.GetById(task.Status);
+            var userSearch = await _userQuery.GetById(task.AssignedTo);
+            if (task.Name == "string" || task.Name == "" || task.Status == 0 || task.AssignedTo == 0)
+            {
+                throw new BadRequestException("The Request contains a non acceptable value");
+            }
+            else if (taskStatusSearch == null || userSearch == null)
+            {
+                throw new BadRequestException("There is no Task or User with the chosen ID´s");
             }
             await _command.UpdateTask(task);
             var updatedTask = await _query.ListGetById(task.TaskID);

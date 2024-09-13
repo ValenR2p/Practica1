@@ -1,11 +1,6 @@
 ﻿using Application.IMapper;
 using Application.Response;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Mappers
 {
@@ -14,7 +9,8 @@ namespace Application.Mappers
         public Task<List<GenericResponse>> GetCampaignType(List<CampaignType> campaignsTypes)
         {
             List<GenericResponse> responses = new List<GenericResponse>();
-            foreach (var campaignType in campaignsTypes) {
+            foreach (var campaignType in campaignsTypes)
+            {
                 var response = new GenericResponse
                 {
                     Id = campaignType.Id,

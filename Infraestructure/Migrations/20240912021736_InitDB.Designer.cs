@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20240902222009_FirstDB")]
-    partial class FirstDB
+    [Migration("20240912021736_InitDB")]
+    partial class InitDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CampaignTypes");
+                    b.ToTable("Campaign Type", (string)null);
 
                     b.HasData(
                         new
@@ -97,7 +97,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("ClientID");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Client", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Interaction", b =>
@@ -125,7 +125,7 @@ namespace Infraestructure.Migrations
 
                     b.HasIndex("interactionType");
 
-                    b.ToTable("Interactions");
+                    b.ToTable("Interaction", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.InteractionType", b =>
@@ -142,7 +142,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InteractionTypes");
+                    b.ToTable("Interaction Type", (string)null);
 
                     b.HasData(
                         new
@@ -182,17 +182,17 @@ namespace Infraestructure.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ProjectName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("UpdateDate")
+                    b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ProjectID");
@@ -201,7 +201,7 @@ namespace Infraestructure.Migrations
 
                     b.HasIndex("ClientID");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Project", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Task", b =>
@@ -229,10 +229,7 @@ namespace Infraestructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("Task")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdateDate")
+                    b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("TaskID");
@@ -241,9 +238,9 @@ namespace Infraestructure.Migrations
 
                     b.HasIndex("ProjectID");
 
-                    b.HasIndex("Task");
+                    b.HasIndex("Status");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Task", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.TaskStatus", b =>
@@ -260,7 +257,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TaskStatus");
+                    b.ToTable("Task Status", (string)null);
 
                     b.HasData(
                         new
@@ -308,7 +305,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Users");
+                    b.ToTable("User", (string)null);
 
                     b.HasData(
                         new
@@ -397,7 +394,7 @@ namespace Infraestructure.Migrations
 
                     b.HasOne("Domain.Entities.TaskStatus", "TaskStatus")
                         .WithMany()
-                        .HasForeignKey("Task")
+                        .HasForeignKey("Status")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

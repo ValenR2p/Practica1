@@ -1,7 +1,6 @@
 ﻿using Application.IMapper;
 using Application.Interface;
 using Application.Response;
-using Domain.Entities;
 
 namespace Application.UseCase
 {

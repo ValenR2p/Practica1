@@ -17,7 +17,7 @@ namespace Infraestructure.Query
                 Include(s => s.User).
                 Include(s => s.TaskStatus).
                 Where(s => s.ProjectID == id).ToListAsync();
-            return tasks;   
+            return tasks;
         }
         public async Task<Domain.Entities.Task> ListGetById(Guid id)
         {
