@@ -20,7 +20,6 @@ namespace Application.UseCase
         {
             var campaingsTypes = await _query.ListGetAll();
             return await _mapper.GetCampaignType(campaingsTypes);
-            //return _query.ListGetAll();
         }
         public async Task<GenericResponse> GetById(int id)
         {

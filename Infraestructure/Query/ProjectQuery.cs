@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Infraestructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infraestructure.Query
 {
@@ -28,7 +29,7 @@ namespace Infraestructure.Query
         {
             if (name != null || CampaignTypeId != 0 || ClientId != 0)
             {
-                var projects = await _apiContext.Projects.
+                var projects =  await _apiContext.Projects.
                     Include(s => s.Client).
                     Include(s => s.Campaign).
                     Where(p => (string.IsNullOrEmpty(name) || p.ProjectName == name) && (p.CampaignType == CampaignTypeId ||

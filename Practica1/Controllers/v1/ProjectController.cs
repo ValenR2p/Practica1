@@ -2,6 +2,7 @@
 using Application.Interface;
 using Application.Models;
 using Application.Response;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Practica1.Controllers.v1
@@ -17,11 +18,14 @@ namespace Practica1.Controllers.v1
         }
         [HttpGet]
         [ProducesResponseType(typeof(List<ProjectResponse>), 200)]
-        //Ver lo de la paginacion
         public async Task<IActionResult> GetAllFiltered(int campaignTypeId, string? projectName,
-            int clientId, int pageNumber = 1, int pageSize = 1)
+            int clientId, int pageNumber, int pageSize)
         {
             var result = await _services.GetAllFiltered(projectName, campaignTypeId, clientId);
+            //var paginatedResult = result
+            //    .Skip((pageNumber - 1) * pageSize)
+            //    .Take(pageSize)
+            //    .ToList();
             return new JsonResult(result)
             {
                 StatusCode = 200

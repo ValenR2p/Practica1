@@ -12,9 +12,9 @@ namespace Application.UseCase
         private readonly IProjectQuery _query;
         private readonly IProjectCommand _command;
         private readonly IProjectMapper _mapper;
-        private readonly IClientQuery _clientQuery;//
+        private readonly IClientQuery _clientQuery;
         private readonly ITaskServices _taskServices;
-        private readonly ICampaignTypeQuery _campaignTypeQuery;//
+        private readonly ICampaignTypeQuery _campaignTypeQuery;
         private readonly IInteractionServices _interactionServices;
         private readonly IInformationProjectMapper _informationProjectMapper;
         public ProjectServices(IProjectQuery query, IProjectCommand command,
@@ -124,8 +124,6 @@ namespace Application.UseCase
         }
         public async Task<TaskResponse> UpdateTask(CreateTaskRequest createTaskRequest, Guid id)
         {
-            //0cb41dcd - 0716 - 4f06 - 60c4 - 08dcd42c2434
-
             var updatedTask = await _taskServices.UpdateTask(createTaskRequest, id);
             var projectToUpdate = await _query.ListGetById(updatedTask.ProjectID);
             projectToUpdate.UpdateDate = DateTime.Now;

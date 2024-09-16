@@ -27,11 +27,11 @@ namespace Infraestructure.Persistence
                 entity.HasKey(p => p.ProjectID);
                 entity.Property(p => p.ProjectID).ValueGeneratedOnAdd();
                 entity.HasOne(p => p.Campaign)
-                .WithMany()
-                .HasForeignKey(p => p.CampaignType);
+                      .WithMany()
+                      .HasForeignKey(p => p.CampaignType);
                 entity.HasOne(p => p.Client)
-                .WithMany()
-                .HasForeignKey(p => p.ClientID);
+                      .WithMany()
+                      .HasForeignKey(p => p.ClientID);
             });
             modelBuilder.Entity<Domain.Entities.Task>(entity =>
             {
@@ -42,11 +42,11 @@ namespace Infraestructure.Persistence
                 .WithMany()
                 .HasForeignKey(t => t.ProjectID);
                 entity.HasOne(t => t.User)
-                .WithMany()
-                .HasForeignKey(t => t.AssignedTo);
+                      .WithMany()
+                      .HasForeignKey(t => t.AssignedTo);
                 entity.HasOne(t => t.TaskStatus)
-                .WithMany()
-                .HasForeignKey(t => t.Status);
+                      .WithMany()
+                      .HasForeignKey(t => t.Status);
             });
             modelBuilder.Entity<Interaction>(entity =>
             {
@@ -54,11 +54,11 @@ namespace Infraestructure.Persistence
                 entity.HasKey(i => i.InteractionID);
                 entity.Property(i => i.InteractionID).ValueGeneratedOnAdd();
                 entity.HasOne(i => i.Project)
-                .WithMany()
-                .HasForeignKey(i => i.ProjectID);
+                      .WithMany()
+                      .HasForeignKey(i => i.ProjectID);
                 entity.HasOne(i => i.interaction)
-                .WithMany()
-                .HasForeignKey(i => i.interactionType);
+                      .WithMany()
+                      .HasForeignKey(i => i.interactionType);
             });
             modelBuilder.Entity<Client>(entity =>
             {
