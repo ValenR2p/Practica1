@@ -27,7 +27,7 @@ namespace Practica1.Controllers.v1
             };
         }
         [HttpPost]
-        [ProducesResponseType(typeof(List<ClientResponse>), 201)]
+        [ProducesResponseType(typeof(ClientResponse), 201)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]
         public async Task<IActionResult> CreateClient(CreateClientRequest request)
         {

@@ -42,24 +42,16 @@ namespace Application.UseCase
                 throw new BadRequestException("There is no Interaction Type with the chosen ID");
             }
             await _command.InsertInteraction(interaction);
-            return new InteractionsResponse
-            {
-                InteractionID = interaction.InteractionID,
-                Notes = request.Notes,
-                Date = request.Date,
-                ProjectID = id,
-                interaction = await _interactionTypeServices.GetById(request.interactionType),
-            };
+            return await _mapper.GetOneInteraction(interaction);
         }
         public async Task<List<InteractionsResponse>> GetAllInteractionsById(Guid id)
         {
             var tasks = await _query.ListGetAllById(id);
             return await _mapper.GetInteractions(tasks);
         }
-        public async Task<Interaction> InsertInteraction(Domain.Entities.Interaction interaction)
+        public async System.Threading.Tasks.Task InsertInteraction(Domain.Entities.Interaction interaction)
         {
             await _command.InsertInteraction(interaction);
-            throw new NotImplementedException();
         }
     }
 }

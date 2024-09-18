@@ -86,7 +86,7 @@ namespace Infraestructure.Persistence
                 entity.ToTable("User");
                 entity.HasKey(u => u.UserID);
             });
-            // Semillas de datos para las tablas
+
             modelBuilder.Entity<CampaignType>().HasData(
                 new CampaignType { Id = 1, Name = "SEO" },
                 new CampaignType { Id = 2, Name = "PPC" },

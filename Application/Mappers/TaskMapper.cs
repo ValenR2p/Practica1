@@ -22,9 +22,7 @@ namespace Application.Mappers
                 Name = task.Name,
                 DueDate = task.DueDate,
                 ProjectID = task.ProjectID,
-                //TaskStatus = task.TaskStatus,
                 TaskStatus = await _taskStatusMapper.GetOneTaskStatus(task.TaskStatus),
-                //User = task.User,
                 User = await _userMapper.GetOneUser(task.User)
             };
             return await System.Threading.Tasks.Task.FromResult(response);
@@ -41,9 +39,7 @@ namespace Application.Mappers
                     Name = task.Name,
                     DueDate = task.DueDate,
                     ProjectID = task.ProjectID,
-                    //TaskStatus = task.TaskStatus,
                     TaskStatus = await _taskStatusMapper.GetOneTaskStatus(task.TaskStatus),
-                    //User = task.User,
                     User = await _userMapper.GetOneUser(task.User)
                 };
                 responses.Add(response);

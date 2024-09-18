@@ -7,14 +7,11 @@ namespace Application.UseCase
     public class InteractionTypeServices : IInteractionTypeServices
     {
         private readonly IInteractionTypeQuery _query;
-        private readonly IInteractionTypeCommand _command;
         private readonly IGenericMapper _mapper;
 
-        public InteractionTypeServices(IInteractionTypeQuery query, IInteractionTypeCommand command,
-            IGenericMapper mapper)
+        public InteractionTypeServices(IInteractionTypeQuery query, IGenericMapper mapper)
         {
             _query = query;
-            _command = command;
             _mapper = mapper;
         }
         public async Task<List<GenericResponse>> GetAll()

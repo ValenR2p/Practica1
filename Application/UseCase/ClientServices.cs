@@ -24,12 +24,6 @@ namespace Application.UseCase
             var clients = await _query.ListGetAll();
             return await _mapper.GetClients(clients);
         }
-
-        public async Task<Client> InsertClient(Client client)
-        {
-            await _command.InsertClient(client);
-            return client;
-        }
         public async Task<ClientResponse> CreateClient(CreateClientRequest request)
         {
             var client = new Client
@@ -41,12 +35,14 @@ namespace Application.UseCase
                 Address = request.Address,
                 CreateDate = DateTime.Now
             };
-            if (client.Name == "string" || client.Email == "string" || client.Phone == "string" || client.Company == "string" || client.Address == "string")
+            if (client.Name == "string" || client.Name == "" || client.Email == "string" || client.Email == "" ||
+                client.Phone == "string" || client.Phone == "" || client.Company == "string" || client.Company == "" ||
+                client.Address == "string" || client.Address == "")
             {
                 throw new BadRequestException("The Request contains a non acceptable value");
             }
             await _command.InsertClient(client);
-            return await this.GetById(client.ClientID);
+            return await _mapper.GetOneClient(client);
         }
 
         public async Task<ClientResponse> GetById(int id)

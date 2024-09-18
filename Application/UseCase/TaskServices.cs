@@ -39,7 +39,7 @@ namespace Application.UseCase
             };
             var taskStatusSearch = await _taskStatusQuery.GetById(task.Status);
             var userSearch = await _userQuery.GetById(task.AssignedTo);
-            if (task.Name == "string" || task.Name == "" || task.Status == 0 || task.AssignedTo == 0)
+            if (task.Name == "string" || task.Name == "" || task.Status <= 0 || task.AssignedTo <= 0)
             {
                 throw new BadRequestException("The Request contains a non acceptable value");
             }
@@ -48,25 +48,16 @@ namespace Application.UseCase
                 throw new BadRequestException("There is no Task or User with the chosen ID´s");
             }
             await _command.InsertTask(task);
-            return new TaskResponse
-            {
-                TaskID = task.TaskID,
-                Name = task.Name,
-                DueDate = task.DueDate,
-                ProjectID = task.ProjectID,
-                TaskStatus = await _taskStatusServices.GetById(request.Status),
-                User = await _userServices.GetById(request.AssignedTo),
-            };
+            return await _mapper.GetOneTask(task);
         }
         public async Task<List<TaskResponse>> GetAllTasksById(Guid id)
         {
             var tasks = await _query.ListGetAllById(id);
             return await _mapper.GetTasks(tasks);
         }
-        public async Task<Domain.Entities.Task> InsertTask(Domain.Entities.Task task)
+        public async Task InsertTask(Domain.Entities.Task task)
         {
             await _command.InsertTask(task);
-            throw new NotImplementedException();
         }
         public async Task<TaskResponse> UpdateTask(CreateTaskRequest request, Guid id)
         {
@@ -85,7 +76,7 @@ namespace Application.UseCase
             }
             var taskStatusSearch = await _taskStatusQuery.GetById(task.Status);
             var userSearch = await _userQuery.GetById(task.AssignedTo);
-            if (task.Name == "string" || task.Name == "" || task.Status == 0 || task.AssignedTo == 0)
+            if (task.Name == "string" || task.Name == "" || task.Status <= 0 || task.AssignedTo <= 0)
             {
                 throw new BadRequestException("The Request contains a non acceptable value");
             }
@@ -94,8 +85,8 @@ namespace Application.UseCase
                 throw new BadRequestException("There is no Task or User with the chosen ID´s");
             }
             await _command.UpdateTask(task);
-            var updatedTask = await _query.ListGetById(task.TaskID);
-            return await _mapper.GetOneTask(updatedTask);
+            //var updatedTask = await _query.ListGetById(task.TaskID);
+            return await _mapper.GetOneTask(task);
         }
     }
 }

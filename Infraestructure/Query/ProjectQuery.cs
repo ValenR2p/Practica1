@@ -2,7 +2,6 @@
 using Domain.Entities;
 using Infraestructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infraestructure.Query
 {
@@ -25,15 +24,23 @@ namespace Infraestructure.Query
                 FirstOrDefault(s => s.ProjectID == id);
             return project;
         }
-        public async Task<List<Project>> ListGetByFilter(string? name, int? CampaignTypeId, int? ClientId)
+        public async Task<List<Project>> ListGetByFilter(string? name, int? CampaignTypeId, int? ClientId, int pageNumber, int pageSize)
         {
             if (name != null || CampaignTypeId != 0 || ClientId != 0)
             {
-                var projects =  await _apiContext.Projects.
+                var projects = await _apiContext.Projects.
                     Include(s => s.Client).
                     Include(s => s.Campaign).
                     Where(p => (string.IsNullOrEmpty(name) || p.ProjectName == name) && (p.CampaignType == CampaignTypeId ||
                     CampaignTypeId == 0) && (p.ClientID == ClientId || ClientId == 0)).ToListAsync();
+                if (pageNumber > 0 || pageSize > 0)
+                {
+                    var paginatedResult = projects
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+                    return paginatedResult;
+                }
                 return projects;
             }
             return new List<Project>();
