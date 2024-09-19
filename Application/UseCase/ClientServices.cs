@@ -19,11 +19,15 @@ namespace Application.UseCase
             _command = command;
             _mapper = mapper;
         }
+
+
         public async Task<List<ClientResponse>> GetAll()
         {
             var clients = await _query.ListGetAll();
             return await _mapper.GetClients(clients);
         }
+
+
         public async Task<ClientResponse> CreateClient(CreateClientRequest request)
         {
             var client = new Client
@@ -44,6 +48,7 @@ namespace Application.UseCase
             await _command.InsertClient(client);
             return await _mapper.GetOneClient(client);
         }
+
 
         public async Task<ClientResponse> GetById(int id)
         {

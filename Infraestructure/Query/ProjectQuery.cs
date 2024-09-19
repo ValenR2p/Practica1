@@ -24,26 +24,34 @@ namespace Infraestructure.Query
                 FirstOrDefault(s => s.ProjectID == id);
             return project;
         }
-        public async Task<List<Project>> ListGetByFilter(string? name, int? CampaignTypeId, int? ClientId, int pageNumber, int pageSize)
+        public async Task<List<Project>> ListGetByFilter(string? name, int? CampaignTypeId, int? ClientId, int? pageNumber, int? pageSize)
         {
-            if (name != null || CampaignTypeId != 0 || ClientId != 0)
+            var projects = _apiContext.Projects.
+                Include(s => s.Campaign).
+                Include(s => s.Client).
+                AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
             {
-                var projects = await _apiContext.Projects.
-                    Include(s => s.Client).
-                    Include(s => s.Campaign).
-                    Where(p => (string.IsNullOrEmpty(name) || p.ProjectName == name) && (p.CampaignType == CampaignTypeId ||
-                    CampaignTypeId == 0) && (p.ClientID == ClientId || ClientId == 0)).ToListAsync();
-                if (pageNumber > 0 || pageSize > 0)
-                {
-                    var paginatedResult = projects
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
-                    return paginatedResult;
-                }
-                return projects;
+                projects = projects.Where(p => p.ProjectName.Contains(name));
             }
-            return new List<Project>();
+            if (CampaignTypeId.HasValue)
+            {
+                projects = projects.Where(p => p.CampaignType == CampaignTypeId.Value);
+            }
+            if (ClientId.HasValue)
+            {
+                projects = projects.Where(p => p.ClientID == ClientId.Value);
+            }
+            if (pageNumber.HasValue)
+            {
+                projects = projects.Skip(pageNumber.Value);
+            }
+            if (pageSize.HasValue)
+            {
+                projects = projects.Take(pageSize.Value);
+            }
+            return await projects.ToListAsync();
         }
     }
 }

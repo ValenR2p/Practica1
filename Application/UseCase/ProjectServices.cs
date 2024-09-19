@@ -18,9 +18,9 @@ namespace Application.UseCase
         private readonly IInteractionServices _interactionServices;
         private readonly IInformationProjectMapper _informationProjectMapper;
         public ProjectServices(IProjectQuery query, IProjectCommand command,
-            IClientQuery clientQuery, ITaskServices taskServices, IProjectMapper mapper,
-            IInformationProjectMapper informationProjectMapper, IInteractionServices interactionServices,
-            ICampaignTypeQuery campaignTypeQuery)
+            IClientQuery clientQuery, ITaskServices taskServices,
+            IProjectMapper mapper, IInformationProjectMapper informationProjectMapper,
+            IInteractionServices interactionServices, ICampaignTypeQuery campaignTypeQuery)
         {
             _query = query;
             _command = command;
@@ -31,15 +31,14 @@ namespace Application.UseCase
             _clientQuery = clientQuery;
             _campaignTypeQuery = campaignTypeQuery;
         }
+
+
         public async Task<List<Project>> GetAll()
         {
             return await _query.ListGetAll();
         }
-        public async Task<Project> InsertProject(Project project)
-        {
-            await _command.InsertProject(project);
-            return project;
-        }
+
+
         public async Task<InformationProjectResponse> CreateProject(CreateProjectRequest request)
         {
             var project = new Project
@@ -52,7 +51,7 @@ namespace Application.UseCase
                 UpdateDate = null,
                 EndDate = request.EndDate,
             };
-            var projectSearch = await _query.ListGetByFilter(project.ProjectName, 0, 0, 0, 0);
+            var projectSearch = await _query.ListGetByFilter(project.ProjectName, null, null, null, null);
             var clientSearch = await _clientQuery.ListGetById(project.ClientID);
             var campaignTypeSearch = await _campaignTypeQuery.GetCampaignTypes(project.CampaignType);
             if (projectSearch.Count != 0)
@@ -75,6 +74,8 @@ namespace Application.UseCase
                 interactions = await _interactionServices.GetAllInteractionsById(project.ProjectID)
             };
         }
+
+
         public async Task<InformationProjectResponse> GetById(Guid id)
         {
             var test = await _query.ListGetById(id);
@@ -87,11 +88,15 @@ namespace Application.UseCase
                 throw new ObjectNotFoundException("The Project with ID: " + id + " does not exist");
             }
         }
-        public async Task<List<ProjectResponse>> GetAllFiltered(string? name, int CampaignTypeId, int ClientId, int pageNumber, int pageSize)
+
+
+        public async Task<List<ProjectResponse>> GetAllFiltered(string? name, int? CampaignTypeId, int? ClientId, int? pageNumber, int? pageSize)
         {
             var projects = await _query.ListGetByFilter(name, CampaignTypeId, ClientId, pageNumber, pageSize);
             return await _mapper.GetProjects(projects);
         }
+
+
         public async Task<TaskResponse> AddTask(CreateTaskRequest request, Guid id)
         {
             var projectToUpdate = await _query.ListGetById(id);
@@ -107,6 +112,8 @@ namespace Application.UseCase
                 throw new BadRequestException("The Project with ID: " + id + " does not exist");
             }
         }
+
+
         public async Task<InteractionsResponse> AddInteraction(CreateInteractionRequest request, Guid id)
         {
             var projectToUpdate = await _query.ListGetById(id);
@@ -122,6 +129,8 @@ namespace Application.UseCase
                 throw new ObjectNotFoundException("The Project with ID: " + id + " does not exist");
             }
         }
+
+
         public async Task<TaskResponse> UpdateTask(CreateTaskRequest createTaskRequest, Guid id)
         {
             var updatedTask = await _taskServices.UpdateTask(createTaskRequest, id);

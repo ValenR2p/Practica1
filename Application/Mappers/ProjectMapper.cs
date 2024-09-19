@@ -42,7 +42,6 @@ namespace Application.Mappers
                     EndDate = project.EndDate,
                     Client = await _clientMapper.GetOneClient(project.Client),
                     Campaign = await _campaignMapper.GetOneCampaignType(project.Campaign),
-
                 };
                 responses.Add(response);
             }

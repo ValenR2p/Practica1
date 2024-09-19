@@ -12,17 +12,17 @@ namespace Application.UseCase
         private readonly IInteractionCommand _command;
         private readonly IInteractionQuery _query;
         private readonly IInteractionMapper _mapper;
-        private readonly IInteractionTypeServices _interactionTypeServices;
         private readonly IInteractionTypeQuery _interactionTypeQuery;
-        public InteractionServices(IInteractionCommand command, IInteractionTypeServices interactionTypeServices,
-            IInteractionQuery query, IInteractionMapper mapper, IInteractionTypeQuery interactionTypeQuery)
+        public InteractionServices(IInteractionCommand command, IInteractionQuery query,
+            IInteractionMapper mapper, IInteractionTypeQuery interactionTypeQuery)
         {
             _command = command;
-            _interactionTypeServices = interactionTypeServices;
             _query = query;
             _mapper = mapper;
             _interactionTypeQuery = interactionTypeQuery;
         }
+
+
         public async Task<InteractionsResponse> CreateInteraction(CreateInteractionRequest request, Guid id)
         {
             var interaction = new Interaction
@@ -44,11 +44,15 @@ namespace Application.UseCase
             await _command.InsertInteraction(interaction);
             return await _mapper.GetOneInteraction(interaction);
         }
+
+
         public async Task<List<InteractionsResponse>> GetAllInteractionsById(Guid id)
         {
             var tasks = await _query.ListGetAllById(id);
             return await _mapper.GetInteractions(tasks);
         }
+
+
         public async System.Threading.Tasks.Task InsertInteraction(Domain.Entities.Interaction interaction)
         {
             await _command.InsertInteraction(interaction);

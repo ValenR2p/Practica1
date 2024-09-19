@@ -15,10 +15,12 @@ namespace Practica1.Controllers.v1
         {
             _services = services;
         }
+
+
         [HttpGet]
         [ProducesResponseType(typeof(List<ProjectResponse>), 200)]
-        public async Task<IActionResult> GetAllFiltered(int campaignTypeId, string? projectName,
-            int clientId, int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllFiltered(int? campaignTypeId, string? projectName,
+            int? clientId, int? pageNumber, int? pageSize)
         {
             var result = await _services.GetAllFiltered(projectName, campaignTypeId, clientId, pageNumber, pageSize);
             return new JsonResult(result)
@@ -26,6 +28,8 @@ namespace Practica1.Controllers.v1
                 StatusCode = 200
             };
         }
+
+
         [HttpPost]
         [ProducesResponseType(typeof(InformationProjectResponse), 201)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]
@@ -44,6 +48,8 @@ namespace Practica1.Controllers.v1
                 return BadRequest(new ExceptionResponse { message = ex.message });
             }
         }
+
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(InformationProjectResponse), 200)]
         [ProducesResponseType(typeof(ExceptionResponse), 404)]
@@ -62,6 +68,8 @@ namespace Practica1.Controllers.v1
                 return NotFound(new ExceptionResponse { message = ex.message });
             }
         }
+
+
         [HttpPost("{id}/interactions")]
         [ProducesResponseType(typeof(InteractionsResponse), 201)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]
@@ -80,6 +88,8 @@ namespace Practica1.Controllers.v1
                 return BadRequest(new ExceptionResponse { message = ex.message });
             }
         }
+
+
         [HttpPost("{id}/tasks")]
         [ProducesResponseType(typeof(TaskResponse), 201)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]
@@ -98,6 +108,8 @@ namespace Practica1.Controllers.v1
                 return BadRequest(new ExceptionResponse { message = ex.message });
             }
         }
+
+
         [HttpPut("/api/v1/Tasks/{id}")]
         [ProducesResponseType(typeof(TaskResponse), 200)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]

@@ -11,22 +11,20 @@ namespace Application.UseCase
         private readonly ITaskCommand _command;
         private readonly ITaskQuery _query;
         private readonly ITaskMapper _mapper;
-        private readonly ITaskStatusServices _taskStatusServices;
         private readonly ITaskStatusQuery _taskStatusQuery;
-        private readonly IUserServices _userServices;
         private readonly IUserQuery _userQuery;
 
-        public TaskServices(ITaskCommand command, ITaskQuery query, ITaskMapper mapper, IUserServices userServices,
-            ITaskStatusServices taskStatusServices, ITaskStatusQuery taskStatusQuery, IUserQuery userQuery)
+        public TaskServices(ITaskCommand command, ITaskQuery query, ITaskMapper mapper,
+        ITaskStatusQuery taskStatusQuery, IUserQuery userQuery)
         {
             _command = command;
             _query = query;
             _mapper = mapper;
-            _taskStatusServices = taskStatusServices;
-            _userServices = userServices;
             _taskStatusQuery = taskStatusQuery;
             _userQuery = userQuery;
         }
+
+
         public async Task<TaskResponse> CreateTask(CreateTaskRequest request, Guid id)
         {
             var task = new Domain.Entities.Task
@@ -50,11 +48,15 @@ namespace Application.UseCase
             await _command.InsertTask(task);
             return await _mapper.GetOneTask(task);
         }
+
+
         public async Task<List<TaskResponse>> GetAllTasksById(Guid id)
         {
             var tasks = await _query.ListGetAllById(id);
             return await _mapper.GetTasks(tasks);
         }
+
+
         public async Task InsertTask(Domain.Entities.Task task)
         {
             await _command.InsertTask(task);
@@ -85,7 +87,6 @@ namespace Application.UseCase
                 throw new BadRequestException("There is no Task or User with the chosen ID´s");
             }
             await _command.UpdateTask(task);
-            //var updatedTask = await _query.ListGetById(task.TaskID);
             return await _mapper.GetOneTask(task);
         }
     }

@@ -1,5 +1,4 @@
-﻿//Deberia esta en application
-namespace Application.Models
+﻿namespace Application.Models
 {
     public class CreateClientRequest
     {
