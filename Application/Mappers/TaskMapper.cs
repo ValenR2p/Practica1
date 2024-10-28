@@ -18,12 +18,12 @@ namespace Application.Mappers
         {
             var response = new TaskResponse
             {
-                TaskID = task.TaskID,
+                Id = task.TaskID,
                 Name = task.Name,
                 DueDate = task.DueDate,
-                ProjectID = task.ProjectID,
-                TaskStatus = await _taskStatusMapper.GetOneTaskStatus(task.TaskStatus),
-                User = await _userMapper.GetOneUser(task.User)
+                ProjectId = task.ProjectID,
+                Status = await _taskStatusMapper.GetOneTaskStatus(task.TaskStatus),
+                UserAssigned = await _userMapper.GetOneUser(task.User)
             };
             return await System.Threading.Tasks.Task.FromResult(response);
         }
@@ -35,12 +35,12 @@ namespace Application.Mappers
             {
                 var response = new TaskResponse
                 {
-                    TaskID = task.TaskID,
+                    Id = task.TaskID,
                     Name = task.Name,
                     DueDate = task.DueDate,
-                    ProjectID = task.ProjectID,
-                    TaskStatus = await _taskStatusMapper.GetOneTaskStatus(task.TaskStatus),
-                    User = await _userMapper.GetOneUser(task.User)
+                    ProjectId = task.ProjectID,
+                    Status = await _taskStatusMapper.GetOneTaskStatus(task.TaskStatus),
+                    UserAssigned = await _userMapper.GetOneUser(task.User)
                 };
                 responses.Add(response);
             }

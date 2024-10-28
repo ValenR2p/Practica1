@@ -4,6 +4,7 @@ using Application.Interface;
 using Application.Models;
 using Application.Response;
 using Domain.Entities;
+using Microsoft.VisualBasic;
 
 namespace Application.UseCase
 {
@@ -39,42 +40,54 @@ namespace Application.UseCase
         }
 
 
-        public async Task<InformationProjectResponse> CreateProject(CreateProjectRequest request)
+        public async Task<InformationProjectResponse> CreateProject(ProjectRequest request)
         {
             var project = new Project
             {
-                ProjectName = request.ProjectName,
-                ClientID = request.ClientID,
+                ProjectName = request.Name,
+                ClientID = request.Client,
                 CampaignType = request.CampaignType,
                 StartDate = DateTime.Now,
                 CreateDate = DateTime.Now,
                 UpdateDate = null,
-                EndDate = request.EndDate,
+                EndDate = request.End,
             };
-            var projectSearch = await _query.ListGetByFilter(project.ProjectName, null, null, null, null);
-            var clientSearch = await _clientQuery.ListGetById(project.ClientID);
-            var campaignTypeSearch = await _campaignTypeQuery.GetCampaignTypes(project.CampaignType);
-            if (projectSearch.Count != 0)
-            {
+
+            if (await _query.GetByName(request.Name) != null) {
                 throw new BadRequestException("The Project with the Name " + project.ProjectName + " already exists, please use another name");
             }
-            else if (project.ProjectName == "string" || project.ProjectName == "" || project.ClientID == 0 || project.CampaignType == 0)
+            else if (string.IsNullOrEmpty(project.ProjectName))
             {
-                throw new BadRequestException("The Request contains a non acceptable value");
+                throw new BadRequestException("The Notes must contain something");
             }
-            else if (clientSearch == null || campaignTypeSearch == null)
+            else if (project.CampaignType <= 0)
             {
-                throw new BadRequestException("There is no Client or Campaign Type with the chosen ID´s");
+                throw new BadRequestException("Campaign Type can not be lower than 1");
+            }
+            else if (project.ClientID <= 0 )
+            {
+                throw new BadRequestException("Client ID can not be lower than 1");
+            }
+            else if (await _clientQuery.ListGetById(project.ClientID) == null) 
+            {
+                throw new BadRequestException("There is no Client with the chosen ID");
+            }
+            else if (await _campaignTypeQuery.GetCampaignTypes(project.CampaignType) == null)
+            {
+                throw new BadRequestException("There is no Campaign Type with the chosen ID");
+            }
+            else if (project.EndDate <= project.StartDate)
+            {
+                throw new BadRequestException("The project End Date can not be earlier than the Start or Creation Date");
             }
             await _command.InsertProject(project);
             return new InformationProjectResponse
             {
-                data = await _mapper.GetOneProject(project),
-                tasks = await _taskServices.GetAllTasksById(project.ProjectID),
-                interactions = await _interactionServices.GetAllInteractionsById(project.ProjectID)
+                Data = await _mapper.GetOneProject(project),
+                Tasks = await _taskServices.GetAllTasksById(project.ProjectID),
+                Interactions = await _interactionServices.GetAllInteractionsById(project.ProjectID)
             };
         }
-
 
         public async Task<InformationProjectResponse> GetById(Guid id)
         {
@@ -90,18 +103,40 @@ namespace Application.UseCase
         }
 
 
-        public async Task<List<ProjectResponse>> GetAllFiltered(string? name, int? CampaignTypeId, int? ClientId, int? pageNumber, int? pageSize)
+        public async Task<List<ProjectResponse>> GetAllFiltered(string? name, int? CampaignTypeId, int? ClientId, int? offset, int? size)
         {
-            var projects = await _query.ListGetByFilter(name, CampaignTypeId, ClientId, pageNumber, pageSize);
+            if (offset < 0) {
+                throw new BadRequestException("The offset value can not be negative");
+            }
+            if (size < 0)
+            {
+                throw new BadRequestException("The size value can not be negative");
+            }
+            var projects = await _query.ListGetByFilter(name, CampaignTypeId, ClientId, offset, size);
             return await _mapper.GetProjects(projects);
         }
 
 
-        public async Task<TaskResponse> AddTask(CreateTaskRequest request, Guid id)
+        public async Task<TaskResponse> AddTask(TaskRequest request, Guid id)
         {
             var projectToUpdate = await _query.ListGetById(id);
             if (projectToUpdate != null)
             {
+                if (projectToUpdate.CreateDate < request.DueDate) {
+                    throw new BadRequestException("The Due Date for the desired task can not be before the projects Creation Date");
+                }
+                else if (projectToUpdate.StartDate < request.DueDate)
+                {
+                    throw new BadRequestException("The Due Date for the desired task can not be before the projects Start Date");
+                }
+                else if (DateTime.Now < request.DueDate)
+                {
+                    throw new BadRequestException("The Date for the desired interaction is set to an already passed date");
+                }
+                else if (projectToUpdate.EndDate < request.DueDate)
+                {
+                    throw new BadRequestException("The Due Date for the desired task can not be after the projects End Date");
+                }
                 var newTask = await _taskServices.CreateTask(request, id);
                 projectToUpdate.UpdateDate = DateTime.Now;
                 await _command.UpdateProject(projectToUpdate);
@@ -114,11 +149,27 @@ namespace Application.UseCase
         }
 
 
-        public async Task<InteractionsResponse> AddInteraction(CreateInteractionRequest request, Guid id)
+        public async Task<InteractionsResponse> AddInteraction(InteractionRequest request, Guid id)
         {
             var projectToUpdate = await _query.ListGetById(id);
             if (projectToUpdate != null)
             {
+                if (projectToUpdate.CreateDate < request.Date)
+                {
+                    throw new BadRequestException("The Date for the desired interaction can not be before the projects Creation Date");
+                }
+                else if (projectToUpdate.StartDate < request.Date)
+                {
+                    throw new BadRequestException("The Date for the desired interaction can not be before the projects Start Date");
+                }
+                else if (DateTime.Now < request.Date)
+                {
+                    throw new BadRequestException("The Date for the desired interaction is set to an already passed date");
+                }
+                else if (projectToUpdate.EndDate < request.Date)
+                {
+                    throw new BadRequestException("The Date for the desired interaction can not be after the projects End Date");
+                }
                 var newInteraction = await _interactionServices.CreateInteraction(request, id);
                 projectToUpdate.UpdateDate = DateTime.Now;
                 await _command.UpdateProject(projectToUpdate);
@@ -131,10 +182,10 @@ namespace Application.UseCase
         }
 
 
-        public async Task<TaskResponse> UpdateTask(CreateTaskRequest createTaskRequest, Guid id)
-        {
+        public async Task<TaskResponse> UpdateTask(TaskRequest createTaskRequest, Guid id)
+        {   
             var updatedTask = await _taskServices.UpdateTask(createTaskRequest, id);
-            var projectToUpdate = await _query.ListGetById(updatedTask.ProjectID);
+            var projectToUpdate = await _query.ListGetById(updatedTask.ProjectId);
             projectToUpdate.UpdateDate = DateTime.Now;
             await _command.UpdateProject(projectToUpdate);
             return updatedTask;

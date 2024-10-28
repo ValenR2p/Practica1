@@ -3,6 +3,7 @@ using Application.Interface;
 using Application.Models;
 using Application.Response;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Practica1.Controllers.v1
 {
@@ -19,25 +20,12 @@ namespace Practica1.Controllers.v1
 
         [HttpGet]
         [ProducesResponseType(typeof(List<ProjectResponse>), 200)]
-        public async Task<IActionResult> GetAllFiltered(int? campaignTypeId, string? projectName,
-            int? clientId, int? pageNumber, int? pageSize)
-        {
-            var result = await _services.GetAllFiltered(projectName, campaignTypeId, clientId, pageNumber, pageSize);
-            return new JsonResult(result)
-            {
-                StatusCode = 200
-            };
-        }
-
-
-        [HttpPost]
-        [ProducesResponseType(typeof(InformationProjectResponse), 201)]
-        [ProducesResponseType(typeof(ExceptionResponse), 400)]
-        public async Task<IActionResult> CreateProject(CreateProjectRequest request)
+        public async Task<IActionResult> GetAllFiltered(string? name, int? campaign,
+            int? client, int? offset, int? size)
         {
             try
             {
-                var result = await _services.CreateProject(request);
+                var result = await _services.GetAllFiltered(name, campaign, client, offset, size);
                 return new JsonResult(result)
                 {
                     StatusCode = 200
@@ -45,7 +33,35 @@ namespace Practica1.Controllers.v1
             }
             catch (BadRequestException ex)
             {
-                return BadRequest(new ExceptionResponse { message = ex.message });
+                return BadRequest(new ExceptionResponse { Message = ex.message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error has ocurred", details = ex.Message });
+            }
+
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(InformationProjectResponse), 201)]
+        [ProducesResponseType(typeof(ExceptionResponse), 400)]
+        public async Task<IActionResult> CreateProject(ProjectRequest request)
+        {
+            try
+            {      
+                var result = await _services.CreateProject(request);
+                return new JsonResult(result)
+                {
+                    StatusCode = 201
+                };
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new ExceptionResponse { Message = ex.message });
+            }
+            catch(Exception ex){
+                return StatusCode(500,new { message = "An unexpected error has ocurred", details = ex.Message});
             }
         }
 
@@ -65,47 +81,55 @@ namespace Practica1.Controllers.v1
             }
             catch (ObjectNotFoundException ex)
             {
-                return NotFound(new ExceptionResponse { message = ex.message });
+                return NotFound(new ExceptionResponse { Message = ex.message });
             }
         }
 
 
-        [HttpPost("{id}/interactions")]
+        [HttpPatch("{id}/interactions")]
         [ProducesResponseType(typeof(InteractionsResponse), 201)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]
-        public async Task<IActionResult> AddInteraction(CreateInteractionRequest createInteractionRequest, Guid id)
+        public async Task<IActionResult> AddInteraction(InteractionRequest createInteractionRequest, Guid id)
         {
             try
             {
                 var newInteraction = await _services.AddInteraction(createInteractionRequest, id);
                 return new JsonResult(newInteraction)
                 {
-                    StatusCode = 200
+                    StatusCode = 201
                 };
             }
             catch (BadRequestException ex)
             {
-                return BadRequest(new ExceptionResponse { message = ex.message });
+                return BadRequest(new ExceptionResponse { Message = ex.message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error has ocurred", details = ex.Message });
             }
         }
 
 
-        [HttpPost("{id}/tasks")]
+        [HttpPatch("{id}/tasks")]
         [ProducesResponseType(typeof(TaskResponse), 201)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]
-        public async Task<IActionResult> AddTask(CreateTaskRequest createTaskRequest, Guid id)
+        public async Task<IActionResult> AddTask(TaskRequest createTaskRequest, Guid id)
         {
             try
             {
                 var newTask = await _services.AddTask(createTaskRequest, id);
                 return new JsonResult(newTask)
                 {
-                    StatusCode = 200
+                    StatusCode = 201
                 };
             }
             catch (BadRequestException ex)
             {
-                return BadRequest(new ExceptionResponse { message = ex.message });
+                return BadRequest(new ExceptionResponse { Message = ex.message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error has ocurred", details = ex.Message });
             }
         }
 
@@ -113,7 +137,7 @@ namespace Practica1.Controllers.v1
         [HttpPut("/api/v1/Tasks/{id}")]
         [ProducesResponseType(typeof(TaskResponse), 200)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]
-        public async Task<IActionResult> UpdateTask(CreateTaskRequest createTaskRequest, Guid id)
+        public async Task<IActionResult> UpdateTask(TaskRequest createTaskRequest, Guid id)
         {
             try
             {
@@ -125,7 +149,11 @@ namespace Practica1.Controllers.v1
             }
             catch (BadRequestException ex)
             {
-                return BadRequest(new ExceptionResponse { message = ex.message });
+                return BadRequest(new ExceptionResponse { Message = ex.message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error has ocurred", details = ex.Message });
             }
         }
     }

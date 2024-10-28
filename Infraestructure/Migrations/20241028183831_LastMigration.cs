@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace Infraestructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDB : Migration
+    public partial class LastMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +19,7 @@ namespace Infraestructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,11 +32,11 @@ namespace Infraestructure.Migrations
                 {
                     ClientID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Company = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Company = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", maxLength: 2147483647, nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -49,7 +50,7 @@ namespace Infraestructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -62,7 +63,7 @@ namespace Infraestructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,8 +76,8 @@ namespace Infraestructure.Migrations
                 {
                     UserID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,7 +89,7 @@ namespace Infraestructure.Migrations
                 columns: table => new
                 {
                     ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProjectName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     CampaignType = table.Column<int>(type: "int", nullable: false),
                     ClientID = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -121,7 +122,7 @@ namespace Infraestructure.Migrations
                     ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     interactionType = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Notes = table.Column<string>(type: "nvarchar(max)", maxLength: 2147483647, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -145,7 +146,7 @@ namespace Infraestructure.Migrations
                 columns: table => new
                 {
                     TaskID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", maxLength: 2147483647, nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AssignedTo = table.Column<int>(type: "int", nullable: false),
@@ -184,7 +185,19 @@ namespace Infraestructure.Migrations
                     { 1, "SEO" },
                     { 2, "PPC" },
                     { 3, "Social Media" },
-                    { 4, "Email Marketin" }
+                    { 4, "Email Marketing" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Client",
+                columns: new[] { "ClientID", "Address", "Company", "CreateDate", "Email", "Name", "Phone" },
+                values: new object[,]
+                {
+                    { 1, "JI 431", "A", new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3543), "tomasrippa@gmail.com", "Tomas Rippa", "224422" },
+                    { 2, "M 222", "B", new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3555), "carlosjuan@hotmail.com", "Juan Carlos", "1235486" },
+                    { 3, "P 321", "C", new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3557), "fabiangarcia@yahoo.com", "Fabian Garcia", "213532" },
+                    { 4, "PK 1024", "D", new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3559), "cristiancampos@hotmail.com", "Cristian Campos", "91805736" },
+                    { 5, "B 64", "A", new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3652), "pedroramirez@gmail.com", "Pedro Ramirez", "335232" }
                 });
 
             migrationBuilder.InsertData(
@@ -218,7 +231,7 @@ namespace Infraestructure.Migrations
                     { 1, "jdone@marketing.com", "Joe Done" },
                     { 2, "namstrong@marketing.com", "Nill Amstrong" },
                     { 3, "mmoralez@marketing.com", "Marlyn Morales" },
-                    { 4, "aorue@marketing.com", "Antony Orue" },
+                    { 4, "aorue@marketing.com", "Antony Orué" },
                     { 5, "jfernandez@marketing.com", "Jazmin Fernandez" }
                 });
 
@@ -241,6 +254,12 @@ namespace Infraestructure.Migrations
                 name: "IX_Project_ClientID",
                 table: "Project",
                 column: "ClientID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Project_ProjectName",
+                table: "Project",
+                column: "ProjectName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Task_AssignedTo",

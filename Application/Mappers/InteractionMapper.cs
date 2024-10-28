@@ -19,11 +19,11 @@ namespace Application.Mappers
             {
                 var response = new InteractionsResponse
                 {
-                    InteractionID = interaction.InteractionID,
+                    Id = interaction.InteractionID,
                     Notes = interaction.Notes,
                     Date = interaction.Date,
-                    ProjectID = interaction.ProjectID,
-                    interaction = await _interactionTypeMapper.GetOneInteractionType(interaction.interaction),
+                    ProjectId = interaction.ProjectID,
+                    InteractionType = await _interactionTypeMapper.GetOneInteractionType(interaction.interaction),
                 };
                 responses.Add(response);
             }
@@ -33,11 +33,11 @@ namespace Application.Mappers
         {
             var response = new InteractionsResponse
             {
-                InteractionID = interaction.InteractionID,
+                Id = interaction.InteractionID,
                 Notes = interaction.Notes,
                 Date = interaction.Date,
-                ProjectID = interaction.ProjectID,
-                interaction = await _interactionTypeMapper.GetOneInteractionType(interaction.interaction),
+                ProjectId = interaction.ProjectID,
+                InteractionType = await _interactionTypeMapper.GetOneInteractionType(interaction.interaction),
             };
             return await System.Threading.Tasks.Task.FromResult(response);
         }

@@ -24,11 +24,12 @@ namespace Infraestructure.Query
                 FirstOrDefault(s => s.ProjectID == id);
             return project;
         }
-        public async Task<List<Project>> ListGetByFilter(string? name, int? CampaignTypeId, int? ClientId, int? pageNumber, int? pageSize)
+        public async Task<List<Project>> ListGetByFilter(string? name, int? CampaignTypeId, int? ClientId, int? offset, int? size)
         {
             var projects = _apiContext.Projects.
                 Include(s => s.Campaign).
                 Include(s => s.Client).
+                OrderBy(p => p.ProjectName).
                 AsQueryable();
 
             if (!string.IsNullOrEmpty(name))
@@ -43,15 +44,23 @@ namespace Infraestructure.Query
             {
                 projects = projects.Where(p => p.ClientID == ClientId.Value);
             }
-            if (pageNumber.HasValue)
+            if (offset.HasValue)
             {
-                projects = projects.Skip(pageNumber.Value);
+                projects = projects.Skip(offset.Value);
             }
-            if (pageSize.HasValue)
+            if (size.HasValue)
             {
-                projects = projects.Take(pageSize.Value);
+                projects = projects.Take(size.Value);
             }
             return await projects.ToListAsync();
         }
+        public async Task<Project> GetByName(string name) {
+            var project = _apiContext.Projects.
+                Include(s => s.Campaign).
+                Include(s => s.Client).
+                FirstOrDefault(s => s.ProjectName == name);
+            return project;
+        }
+
     }
 }

@@ -6,7 +6,7 @@ namespace Application.Interface
     public interface IClientServices
     {
         Task<List<ClientResponse>> GetAll();
-        Task<ClientResponse> CreateClient(CreateClientRequest request);
+        Task<ClientResponse> CreateClient(ClientRequest request);
         Task<ClientResponse> GetById(int id);
     }
 }

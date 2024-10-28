@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20240912021736_InitDB")]
-    partial class InitDB
+    [Migration("20241028183831_LastMigration")]
+    partial class LastMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,8 @@ namespace Infraestructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
 
@@ -60,7 +61,7 @@ namespace Infraestructure.Migrations
                         new
                         {
                             Id = 4,
-                            Name = "Email Marketin"
+                            Name = "Email Marketing"
                         });
                 });
 
@@ -74,30 +75,87 @@ namespace Infraestructure.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
+                        .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Company")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("ClientID");
 
                     b.ToTable("Client", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ClientID = 1,
+                            Address = "JI 431",
+                            Company = "A",
+                            CreateDate = new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3543),
+                            Email = "tomasrippa@gmail.com",
+                            Name = "Tomas Rippa",
+                            Phone = "224422"
+                        },
+                        new
+                        {
+                            ClientID = 2,
+                            Address = "M 222",
+                            Company = "B",
+                            CreateDate = new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3555),
+                            Email = "carlosjuan@hotmail.com",
+                            Name = "Juan Carlos",
+                            Phone = "1235486"
+                        },
+                        new
+                        {
+                            ClientID = 3,
+                            Address = "P 321",
+                            Company = "C",
+                            CreateDate = new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3557),
+                            Email = "fabiangarcia@yahoo.com",
+                            Name = "Fabian Garcia",
+                            Phone = "213532"
+                        },
+                        new
+                        {
+                            ClientID = 4,
+                            Address = "PK 1024",
+                            Company = "D",
+                            CreateDate = new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3559),
+                            Email = "cristiancampos@hotmail.com",
+                            Name = "Cristian Campos",
+                            Phone = "91805736"
+                        },
+                        new
+                        {
+                            ClientID = 5,
+                            Address = "B 64",
+                            Company = "A",
+                            CreateDate = new DateTime(2024, 10, 28, 15, 38, 31, 384, DateTimeKind.Local).AddTicks(3652),
+                            Email = "pedroramirez@gmail.com",
+                            Name = "Pedro Ramirez",
+                            Phone = "335232"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Interaction", b =>
@@ -111,6 +169,7 @@ namespace Infraestructure.Migrations
 
                     b.Property<string>("Notes")
                         .IsRequired()
+                        .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProjectID")
@@ -138,7 +197,8 @@ namespace Infraestructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
 
@@ -187,7 +247,8 @@ namespace Infraestructure.Migrations
 
                     b.Property<string>("ProjectName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
@@ -200,6 +261,9 @@ namespace Infraestructure.Migrations
                     b.HasIndex("CampaignType");
 
                     b.HasIndex("ClientID");
+
+                    b.HasIndex("ProjectName")
+                        .IsUnique();
 
                     b.ToTable("Project", (string)null);
                 });
@@ -221,6 +285,7 @@ namespace Infraestructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ProjectID")
@@ -253,7 +318,8 @@ namespace Infraestructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
 
@@ -297,11 +363,13 @@ namespace Infraestructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("UserID");
 
@@ -330,7 +398,7 @@ namespace Infraestructure.Migrations
                         {
                             UserID = 4,
                             Email = "aorue@marketing.com",
-                            Name = "Antony Orue"
+                            Name = "Antony Orué"
                         },
                         new
                         {

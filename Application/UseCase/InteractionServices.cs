@@ -23,23 +23,27 @@ namespace Application.UseCase
         }
 
 
-        public async Task<InteractionsResponse> CreateInteraction(CreateInteractionRequest request, Guid id)
+        public async Task<InteractionsResponse> CreateInteraction(InteractionRequest request, Guid id)
         {
             var interaction = new Interaction
             {
                 Notes = request.Notes,
                 Date = request.Date,
                 ProjectID = id,
-                interactionType = request.interactionType,
+                interactionType = request.InteractionType,
             };
             var interactionTypeSearch = await _interactionTypeQuery.GetById(interaction.interactionType);
-            if (interaction.Notes == "string" || interaction.Notes == "" || interaction.interactionType == 0)
+            if (string.IsNullOrEmpty(interaction.Notes))
             {
-                throw new BadRequestException("The Request contains a non acceptable value");
+                throw new BadRequestException("The Notes must contain something");
             }
             else if (interactionTypeSearch == null)
             {
                 throw new BadRequestException("There is no Interaction Type with the chosen ID");
+            }
+            else if (interaction.interactionType <= 0) 
+            {
+                throw new BadRequestException("The Interaction Type can not be lower than 1");
             }
             await _command.InsertInteraction(interaction);
             return await _mapper.GetOneInteraction(interaction);

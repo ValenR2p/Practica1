@@ -29,19 +29,23 @@ namespace Practica1.Controllers.v1
         [HttpPost]
         [ProducesResponseType(typeof(ClientResponse), 201)]
         [ProducesResponseType(typeof(ExceptionResponse), 400)]
-        public async Task<IActionResult> CreateClient(CreateClientRequest request)
+        public async Task<IActionResult> CreateClient(ClientRequest request)
         {
             try
             {
                 var result = await _services.CreateClient(request);
                 return new JsonResult(result)
                 {
-                    StatusCode = 200
+                    StatusCode = 201
                 };
             }
             catch (BadRequestException ex)
             {
-                return BadRequest(new ExceptionResponse { message = ex.message });
+                return BadRequest(new ExceptionResponse { Message = ex.message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error has ocurred", details = ex.Message });
             }
         }
 

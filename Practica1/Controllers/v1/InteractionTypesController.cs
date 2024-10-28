@@ -6,10 +6,10 @@ namespace Practica1.Controllers.v1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class InteractionTypeController : ControllerBase
+    public class InteractionTypesController : ControllerBase
     {
         private readonly IInteractionTypeServices _services;
-        public InteractionTypeController(IInteractionTypeServices services)
+        public InteractionTypesController(IInteractionTypeServices services)
         {
             _services = services;
         }

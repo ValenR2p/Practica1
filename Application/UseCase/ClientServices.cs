@@ -28,7 +28,7 @@ namespace Application.UseCase
         }
 
 
-        public async Task<ClientResponse> CreateClient(CreateClientRequest request)
+        public async Task<ClientResponse> CreateClient(ClientRequest request)
         {
             var client = new Client
             {
@@ -39,11 +39,37 @@ namespace Application.UseCase
                 Address = request.Address,
                 CreateDate = DateTime.Now
             };
-            if (client.Name == "string" || client.Name == "" || client.Email == "string" || client.Email == "" ||
-                client.Phone == "string" || client.Phone == "" || client.Company == "string" || client.Company == "" ||
-                client.Address == "string" || client.Address == "")
+            if (string.IsNullOrEmpty(client.Name))
             {
-                throw new BadRequestException("The Request contains a non acceptable value");
+                throw new BadRequestException("Name value can not be empty");
+            }
+            else if (string.IsNullOrEmpty(client.Email))
+            {
+                throw new BadRequestException("Email value can not be empty");
+            }
+            else if (string.IsNullOrEmpty(client.Phone))
+            {
+                throw new BadRequestException("Phone value can not be empty");
+            }
+            else if (string.IsNullOrEmpty(client.Company))
+            {
+                throw new BadRequestException("Company value can not be empty");
+            }
+            else if (string.IsNullOrEmpty(client.Address))
+            {
+                throw new BadRequestException("Adress value can not be empty");
+            }
+            else if (!client.Email.Contains("@") && !client.Email.Contains(".com")) 
+            {
+                throw new BadRequestException("The email must have a @ and .com");
+            }
+            else if (client.Phone.Any(char.IsLetter))
+            {
+                throw new BadRequestException("The phone can only have numbers");
+            }
+            else if (client.Phone.Count() <= 8)
+            {
+                throw new BadRequestException("The phone must contain at least 8 numbers");
             }
             await _command.InsertClient(client);
             return await _mapper.GetOneClient(client);

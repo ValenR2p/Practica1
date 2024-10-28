@@ -13,7 +13,7 @@ namespace Application.Mappers
             {
                 var response = new ClientResponse
                 {
-                    ClientID = client.ClientID,
+                    Id = client.ClientID,
                     Name = client.Name,
                     Email = client.Email,
                     Phone = client.Phone,
@@ -29,7 +29,7 @@ namespace Application.Mappers
         {
             var response = new ClientResponse
             {
-                ClientID = client.ClientID,
+                Id = client.ClientID,
                 Name = client.Name,
                 Email = client.Email,
                 Phone = client.Phone,

@@ -2,8 +2,8 @@
 {
     public class InformationProjectResponse
     {
-        public ProjectResponse data { get; set; }
-        public List<InteractionsResponse> interactions { get; set; }
-        public List<TaskResponse> tasks { get; set; }
+        public ProjectResponse Data { get; set; }
+        public List<InteractionsResponse> Interactions { get; set; }
+        public List<TaskResponse> Tasks { get; set; }
     }
 }

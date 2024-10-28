@@ -22,9 +22,9 @@ namespace Application.Mappers
         {
             var response = new InformationProjectResponse
             {
-                data = await _projectMapper.GetOneProject(project),
-                tasks = await _taskServices.GetAllTasksById(project.ProjectID),
-                interactions = await _interactionServices.GetAllInteractionsById(project.ProjectID)
+                Data = await _projectMapper.GetOneProject(project),
+                Tasks = await _taskServices.GetAllTasksById(project.ProjectID),
+                Interactions = await _interactionServices.GetAllInteractionsById(project.ProjectID)
             };
             return await System.Threading.Tasks.Task.FromResult(response);
         }

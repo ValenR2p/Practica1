@@ -19,12 +19,12 @@ namespace Application.Mappers
         {
             var response = new ProjectResponse
             {
-                ProjectID = project.ProjectID,
-                ProjectName = project.ProjectName,
-                StartDate = project.StartDate,
-                EndDate = project.EndDate,
+                Id = project.ProjectID,
+                Name = project.ProjectName,
+                Start = project.StartDate,
+                End = project.EndDate,
                 Client = await _clientMapper.GetOneClient(project.Client),
-                Campaign = await _campaignMapper.GetOneCampaignType(project.Campaign),
+                CampaignType = await _campaignMapper.GetOneCampaignType(project.Campaign),
             };
             return await System.Threading.Tasks.Task.FromResult(response);
         }
@@ -36,12 +36,12 @@ namespace Application.Mappers
             {
                 var response = new ProjectResponse
                 {
-                    ProjectID = project.ProjectID,
-                    ProjectName = project.ProjectName,
-                    StartDate = project.StartDate,
-                    EndDate = project.EndDate,
+                    Id = project.ProjectID,
+                    Name = project.ProjectName,
+                    Start = project.StartDate,
+                    End = project.EndDate,
                     Client = await _clientMapper.GetOneClient(project.Client),
-                    Campaign = await _campaignMapper.GetOneCampaignType(project.Campaign),
+                    CampaignType = await _campaignMapper.GetOneCampaignType(project.Campaign),
                 };
                 responses.Add(response);
             }

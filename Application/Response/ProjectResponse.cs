@@ -2,11 +2,11 @@
 {
     public class ProjectResponse
     {
-        public Guid ProjectID { get; set; }
-        public string ProjectName { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public DateTime? Start { get; set; }
+        public DateTime? End { get; set; }
         public ClientResponse Client { get; set; }
-        public GenericResponse Campaign { get; set; }
+        public GenericResponse CampaignType { get; set; }
     }
 }

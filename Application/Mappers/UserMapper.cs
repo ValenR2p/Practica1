@@ -10,7 +10,7 @@ namespace Application.Mappers
         {
             var response = new UserResponse
             {
-                UserID = user.UserID,
+                Id = user.UserID,
                 Name = user.Name,
                 Email = user.Email,
             };
@@ -24,7 +24,7 @@ namespace Application.Mappers
             {
                 var response = new UserResponse
                 {
-                    UserID = user.UserID,
+                    Id = user.UserID,
                     Name = user.Name,
                     Email = user.Email,
                 };

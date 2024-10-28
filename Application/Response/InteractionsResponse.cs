@@ -2,10 +2,10 @@
 {
     public class InteractionsResponse
     {
-        public Guid InteractionID { get; set; }
+        public Guid Id { get; set; }
         public string Notes { get; set; }
         public DateTime Date { get; set; }
-        public Guid ProjectID { get; set; }
-        public GenericResponse interaction { get; set; }
+        public Guid ProjectId { get; set; }
+        public GenericResponse InteractionType { get; set; }
     }
 }

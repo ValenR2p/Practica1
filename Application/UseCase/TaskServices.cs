@@ -3,6 +3,7 @@ using Application.IMapper;
 using Application.Interface;
 using Application.Models;
 using Application.Response;
+using Domain.Entities;
 
 namespace Application.UseCase
 {
@@ -25,25 +26,42 @@ namespace Application.UseCase
         }
 
 
-        public async Task<TaskResponse> CreateTask(CreateTaskRequest request, Guid id)
+        public async Task<TaskResponse> CreateTask(TaskRequest request, Guid id)
         {
             var task = new Domain.Entities.Task
             {
                 Name = request.Name,
                 DueDate = request.DueDate,
-                AssignedTo = request.AssignedTo,
+                AssignedTo = request.User,
                 Status = request.Status,
                 ProjectID = id,
+                CreateDate = DateTime.Now
             };
             var taskStatusSearch = await _taskStatusQuery.GetById(task.Status);
             var userSearch = await _userQuery.GetById(task.AssignedTo);
-            if (task.Name == "string" || task.Name == "" || task.Status <= 0 || task.AssignedTo <= 0)
+            if (string.IsNullOrEmpty(task.Name))
             {
-                throw new BadRequestException("The Request contains a non acceptable value");
+                throw new BadRequestException("The Notes must contain something");
             }
-            else if (taskStatusSearch == null || userSearch == null)
+            else if (taskStatusSearch == null)
             {
-                throw new BadRequestException("There is no Task or User with the chosen ID´s");
+                throw new BadRequestException("There is no Task with the chosen ID´s");
+            }
+            else if (userSearch == null)
+            {
+                throw new BadRequestException("There is no User with the chosen ID");
+            }
+            else if (task.AssignedTo <= 0)
+            {
+                throw new BadRequestException("The User assiged number can not be lower than 1");
+            }
+            else if (task.Status <= 0)
+            {
+                throw new BadRequestException("The Status number can not be lower than 1");
+            }
+            else if (task.DueDate <= task.CreateDate)
+            {
+                throw new BadRequestException("The project End Date can not be earlier than the Start or Creation Date");
             }
             await _command.InsertTask(task);
             return await _mapper.GetOneTask(task);
@@ -57,18 +75,18 @@ namespace Application.UseCase
         }
 
 
-        public async Task InsertTask(Domain.Entities.Task task)
+        public async System.Threading.Tasks.Task InsertTask(Domain.Entities.Task task)
         {
             await _command.InsertTask(task);
         }
-        public async Task<TaskResponse> UpdateTask(CreateTaskRequest request, Guid id)
+        public async Task<TaskResponse> UpdateTask(TaskRequest request, Guid id)
         {
             var task = await _query.ListGetById(id);
             if (task != null)
             {
                 task.Name = request.Name;
                 task.DueDate = request.DueDate;
-                task.AssignedTo = request.AssignedTo;
+                task.AssignedTo = request.User;
                 task.Status = request.Status;
                 task.UpdateDate = DateTime.Now;
             }
@@ -78,13 +96,29 @@ namespace Application.UseCase
             }
             var taskStatusSearch = await _taskStatusQuery.GetById(task.Status);
             var userSearch = await _userQuery.GetById(task.AssignedTo);
-            if (task.Name == "string" || task.Name == "" || task.Status <= 0 || task.AssignedTo <= 0)
+            if (string.IsNullOrEmpty(task.Name))
             {
-                throw new BadRequestException("The Request contains a non acceptable value");
+                throw new BadRequestException("The Notes must contain something");
             }
-            else if (taskStatusSearch == null || userSearch == null)
+            else if (taskStatusSearch == null)
             {
-                throw new BadRequestException("There is no Task or User with the chosen ID´s");
+                throw new BadRequestException("There is no Task with the chosen ID´s");
+            }
+            else if (userSearch == null)
+            {
+                throw new BadRequestException("There is no User with the chosen ID");
+            }
+            else if (task.AssignedTo <= 0)
+            {
+                throw new BadRequestException("The User assiged number can not be lower than 1");
+            }
+            else if (task.Status <= 0)
+            {
+                throw new BadRequestException("The Status number can not be lower than 1");
+            }
+            else if (task.DueDate <= task.CreateDate)
+            {
+                throw new BadRequestException("The project End Date can not be earlier than the Start or Creation Date");
             }
             await _command.UpdateTask(task);
             return await _mapper.GetOneTask(task);
